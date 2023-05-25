@@ -1,0 +1,39 @@
+﻿@model MoodReboot.Models.UserRegisterModel
+
+<div class="row">
+    <div class="col-md-4 max-w-md" style="margin: 1rem auto;">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="font-medium animate-pulse text-red-600"></div>
+
+            <input name="token" type="hidden" value="@ViewData["TOKEN"]" />
+            <input name="userId" type="hidden" value="@ViewData["USERID"]" />
+
+            <div class="mb-6">
+                <label asp-for="Email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="Email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="example@example.com" required />
+                <span asp-validation-for="Email" class="font-medium animate-pulse text-red-600"></span>
+            </div>
+            <div class="mb-6">
+                <label asp-for="ConfirmEmail" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="ConfirmEmail" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="example@example.com" required />
+
+                <span asp-validation-for="ConfirmEmail" class="font-medium animate-pulse text-red-600"></span>
+            </div>
+
+            <button type="submit" class="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Registrarse</button>
+        </form>
+
+        <div class="mt-10 text-sm font-medium text-gray-500 dark:text-gray-300">
+            ¿Ya eres usuario? <a asp-controller="Users" asp-action="Profile" class="text-blue-700 hover:underline dark:text-blue-500">Iniciar sesión</a>
+        </div>
+    </div>
+</div>
+
+@{
+    if (ViewData["ERROR"] != null)
+    {
+        <div class="p-4 my-6 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+            <span class="font-medium animate-pulse text-red-600">Error: </span> @ViewData["ERROR"]
+        </div>
+    }
+}

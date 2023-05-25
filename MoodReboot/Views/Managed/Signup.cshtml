@@ -1,0 +1,107 @@
+﻿@model MoodReboot.Models.UserRegisterModel
+
+@{
+    ViewData["Title"] = "MR Registro";
+}
+
+@{
+    if (ViewData["MESSAGE"] != null)
+    {
+        <div class="p-4 my-6 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+            <span class="font-medium animate-pulse text-red-600">Error: </span> @ViewData["MESSAGE"]
+        </div>
+    }
+
+    if (ViewData["SUCCESS"] != null)
+    {
+        <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+            @ViewData["SUCCESS"]
+        </div>
+    }
+}
+
+<div class="row">
+    <div class="col-md-4 max-w-md" style="margin: 1rem auto;">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="font-medium animate-pulse text-red-600"></div>
+            <div class="mb-6">
+                <label asp-for="Email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="Email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="example@example.com" required />
+                <span asp-validation-for="Email" class="font-medium animate-pulse text-red-600"></span>
+            </div>
+            <div class="mb-6">
+                <label asp-for="ConfirmEmail" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="ConfirmEmail" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="example@example.com" required />
+
+                <span asp-validation-for="ConfirmEmail" class="font-medium animate-pulse text-red-600"></span>
+            </div>
+            <div class="mb-6">
+                <label asp-for="Password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="Password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" type="password" required />
+
+                <span asp-validation-for="Password" class="font-medium animate-pulse text-red-600"></span>
+            </div>
+            <div class="mb-6">
+                <label asp-for="ConfirmPassword" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="ConfirmPassword" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" type="password" required />
+
+                <span asp-validation-for="ConfirmPassword" class="font-medium animate-pulse text-red-600"></span>
+            </div>
+            <div class="mb-6">
+                <label asp-for="UserName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="UserName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+
+                <span asp-validation-for="UserName" class="font-medium animate-pulse text-red-600"></span>
+            </div>
+            <div class="mb-6">
+                <label asp-for="FirstName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="FirstName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+
+                <span asp-validation-for="FirstName" class="font-medium animate-pulse text-red-600"></span>
+            </div>
+            <div class="mb-6">
+                <label asp-for="LastName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="LastName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+
+                <span asp-validation-for="LastName" class="font-medium animate-pulse text-red-600"></span>
+            </div>
+
+            @{
+                bool noImage = false;
+
+                if (ViewData["NO_IMAGE"] != null)
+                {
+                    noImage = (bool)ViewData["NO_IMAGE"]!;
+                }
+
+                if (noImage == false)
+                {
+                    <div class="mb-6">
+                        <label asp-for="Image" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                        <input asp-for="Image" name="image" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file">
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+
+                        <span class="font-medium animate-pulse text-red-600">@ViewData["ERROR_IMAGE"]</span>
+                        <span asp-validation-for="Image" class="font-medium animate-pulse text-red-600"></span>
+
+                        <div class="my-2 text-sm font-medium text-gray-500 dark:text-gray-300">
+                            <a asp-controller="Managed" asp-action="SignUp" asp-route-noUserImage="true" class="text-blue-700 hover:underline dark:text-blue-500">No quiero imagen de perfil</a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="mb-8 text-sm font-medium text-gray-500 dark:text-gray-300">
+                        <a asp-controller="Managed" asp-action="SignUp" asp-route-noUserImage="false" class="text-blue-700 hover:underline dark:text-blue-500">Quiero imagen de perfil</a>
+                    </div>
+                }
+            }
+
+            <button type="submit" class="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Registrarse</button>
+        </form>
+
+        <div class="mt-10 text-sm font-medium text-gray-500 dark:text-gray-300">
+            ¿Ya eres usuario? <a asp-controller="Users" asp-action="Profile" class="text-blue-700 hover:underline dark:text-blue-500">Iniciar sesión</a>
+        </div>
+    </div>
+</div>

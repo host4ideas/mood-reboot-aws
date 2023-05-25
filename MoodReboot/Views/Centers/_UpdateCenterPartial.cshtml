@@ -1,0 +1,45 @@
+﻿@model MoodReboot.Models.CenterRequestModel
+
+@{
+    Center center = (Center)ViewData["CENTER"];
+}
+
+<div class="row">
+    <div class="col-md-4 max-w-md" style="margin: 1rem auto;">
+        <form method="post" enctype="multipart/form-data">
+            <input name="centerId" type="hidden" value="@center.Id" />
+            <div asp-validation-summary="ModelOnly" class="font-medium animate-pulse text-red-600"></div>
+            <div class="my-6">
+                <label asp-for="CenterEmail" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="CenterEmail" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@center.Email" />
+                <span asp-validation-for="CenterEmail" class="font-medium animate-pulse text-red-600"></span>
+            </div>
+            <div class="mb-6">
+                <label asp-for="CenterName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="CenterName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@center.Name" />
+                <span asp-validation-for="CenterName" class="font-medium animate-pulse text-red-600"></span>
+            </div>
+            <div class="mb-6">
+                <label asp-for="CenterAddress" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="CenterAddress" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@center.Address" />
+                <span asp-validation-for="CenterAddress" class="font-medium animate-pulse text-red-600"></span>
+            </div>
+            <div class="mb-6">
+                <label asp-for="CenterTelephone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="CenterTelephone" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="@center.Telephone" />
+                <span asp-validation-for="CenterTelephone" class="font-medium animate-pulse text-red-600"></span>
+            </div>
+            <div class="mb-6">
+                <label asp-for="CenterImage" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+                <input asp-for="CenterImage" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file" value="~/uploads/center_images/@center.Image" required>
+                <span asp-validation-for="CenterImage" class="font-medium animate-pulse text-red-600"></span>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+            </div>
+            
+            <button type="submit" value="Create" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium rounded-lg text-center text-white text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
+                Actualizar
+                <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+            </button>
+        </form>
+    </div>
+</div>

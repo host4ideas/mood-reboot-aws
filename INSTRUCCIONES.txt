@@ -1,0 +1,12 @@
+No se necesitan usuarios iniciales para utilizar la aplicación, pero si es necesario a la 
+hora de crear centros. Para ello se debe de insertar un usuario con rol admin:
+
+UPDATE APP_USER SET ROLE = 'ADMIN' WHERE USER_ID = <tu ID de usuario>
+
+Una vez con este usuario, se podrán validar las peticiones de creación de un centro.
+
+NOTA:
+
+Si se quiere insertar datos masivos se puede utilizar el script: data-gen-script.sql.
+Nótese que los usuarios creados con el script no serán funcionales en cuanto al login
+(debido al hash), con lo cual sólo valdrán para la visualización de datos.

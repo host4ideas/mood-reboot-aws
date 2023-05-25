@@ -1,0 +1,40 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<!-- Tabbed menu -->
+<div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+    <ul class="flex flex-wrap -mb-px">
+        @{
+            string GetActiveLinkClass(string route)
+            {
+                string currentAction = ViewContext.RouteData.Values["action"]!.ToString()!;
+                string currentController = ViewContext.RouteData.Values["controller"]!.ToString()!;
+                string active = "inline-block p-4 border-b-2 text-blue-600 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500";
+                string notActive = "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300";
+
+                if (currentAction.Contains(route) || currentController.Contains(route))
+                {
+                    return active;
+                }
+                return notActive;
+            }
+
+            <li class="mr-2">
+                <a asp-controller="Centers" asp-action="UserCenters" class="@GetActiveLinkClass("Centers")">Mis Centros</a>
+            </li>
+            <li class="mr-2">
+                <a asp-controller="Courses" asp-action="UserCourses" class="@GetActiveLinkClass("Courses")">Mis Cursos</a>
+            </li>
+        }
+        @Html.Raw(ViewData["ADDITIONAL_LINK"])
+    </ul>
+</div>
+
+<div class="py-8">
+    @RenderBody()
+</div>
+
+@section scripts {
+    @await RenderSectionAsync("scripts", false)
+}

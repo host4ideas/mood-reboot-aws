@@ -1,0 +1,676 @@
+﻿@using Markdig;
+@model CourseDetailsModel
+
+@{
+    Layout = "_MenuLayout";
+}
+
+@{
+    List<FilePreviewModel> previewFiles = new();
+    int userId = int.Parse(Context.User.FindFirstValue(ClaimTypes.NameIdentifier));
+    List<LastSeenCourse>? lastSeenCourses = Context.Session.GetObject<List<LastSeenCourse>>("LAST_COURSES");
+
+    string leaveCourse = Url.Action("DeleteCourseUser", "Courses", new { id = Model.Course.Id, userId });
+    ViewData["ADDITIONAL_LINK"] = $@"<li class='absolute right-5'>
+                                    <button id='btn-course-options' data-dropdown-toggle='dropdown-course-options' class='text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700' type='button'>Opciones</button>
+                                    <div id='dropdown-course-options' class='z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700'>
+                                        <ul class='py-2 text-sm text-gray-700 dark:text-gray-200' aria-labelledby='btn-course-options'>
+                                          <li>
+                                            <a href='{leaveCourse}' class='block px-4 py-1 hover:bg-red-800 hover:text-white dark:hover:bg-red-600 dark:hover:text-gray-800'>Salir del curso</a>
+                                          </li>
+                                        </ul>
+                                    </div>
+                                </li>";
+}
+
+@{
+    if (ViewData["ERROR"] != null)
+    {
+        <div class="p-4 my-6 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+            <span class="font-medium animate-pulse text-red-600">Error: </span> @ViewData["ERROR"]
+        </div>
+    }
+}
+
+<section id="accordion-collapse" class="mt-5 mb-10" data-accordion="collapse">
+
+    @{
+        if (Model.IsEditor == true)
+        {
+            <label class="relative inline-flex items-center cursor-pointer my-6">
+                <input id="toggleEditOptions" type="checkbox" value="" class="sr-only peer" checked>
+                <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Mostrar/ocultar opciones editor</span>
+            </label>
+            <!-- drawer init and toggle -->
+            <div class="editor-option text-center">
+                <button type="button" data-drawer-target="drawer-backdrop" data-drawer-show="drawer-backdrop" data-drawer-backdrop="true" aria-controls="drawer-backdrop" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-800 dark:hover:bg-red-700 dark:focus:ring-red-900">Mostrar usuarios del curso</button>
+            </div>
+        }
+    }
+
+    <h2 class="mb-8 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Contenidos</h2>
+
+    @{
+        if (Model.IsEditor == true)
+        {
+            <!-- New content group form -->
+            <form class="editor-option" method="post" action="@Url.Action("CreateContentGroup", "ContentGroups")">
+                <div class="mb-4 flex justify-between items-center gap-4 flex-wrap">
+                    <!-- Name -->
+                    <div class="relative grow">
+                        <input name="name" type="text" id="floating_helper" aria-describedby="floating_helper_text" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <label for="floating_helper" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Nombre del nuevo grupo</label>
+                    </div>
+                    <div class="flex justify-center items-center gap-4">
+                        <div>
+                            <!-- IsVisible -->
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input name="isVisible" type="checkbox" value="" class="sr-only peer" onclick="toggleIsVisible(event)">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Ocultar</span>
+                            </label>
+                        </div>
+                        <!-- Submit -->
+                        <button type="submit" class="p-4 text-gray-900 bg-white font-medium rounded border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        }
+
+        int indexContentGroup = 0;
+        for (int i = 0; i < Model.ContentGroups.Count; i++)
+        {
+            ContentGroup group = Model.ContentGroups[i];
+            int index = i + 1;
+
+            string formId = "formNotSubmit" + index;
+            string floatingLabelId = "floating_helper" + group.ContentGroupId;
+
+            string headingClass = "";
+
+            // Different header style per position
+            if (i < 1)
+            {
+                headingClass = "flex items-center justify-between w-full p-2 sm:p-4 text-lg font-bold text-left text-gray-500 border-2 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer";
+            }
+            else if (i > 0 && i < Model.ContentGroups.Count - 1)
+            {
+                headingClass = "flex items-center justify-between w-full p-2 sm:p-4 text-lg font-bold text-left text-gray-500 border-2 border-t-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer";
+            }
+            else
+            {
+                headingClass = "flex items-center justify-between w-full p-2 sm:p-4 text-lg font-bold text-left text-gray-500 border-2 border-t-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer";
+            }
+
+            // Header
+            <div id="accordion-collapse-heading-@index">
+                <div class="@headingClass" data-accordion-target="#accordion-collapse-body-@index" aria-expanded="false" aria-controls="accordion-collapse-body-@index">
+                    @{
+                        if (Model.IsEditor == true)
+                        {
+                            <div class="editor-option">
+                                <!-- Delete content group -->
+                                <a asp-controller="ContentGroups" asp-action="DeleteContentGroup" asp-route-id="@group.ContentGroupId" asp-route-courseId="@Model.Course.Id" class="inline-flex items-center my-1 p-1 sm:p-4 text-gray-900 dark:text-white font-medium rounded border border-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-200 bg-red-400 hover:bg-red-200 dark:hover:bg-red-700 dark:bg-red-900 dark:border-gray-600 dark:hover:bg-red-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                    </svg>
+                                </a>
+                            </div>
+                            <!-- Update content group -->
+                            <form id="@formId" class="editor-option flex flex-wrap items-center gap-4 justify-center" method="post" data-accordion-target="#accordion-collapse-body-@index" aria-expanded="false" aria-controls="accordion-collapse-body-@index" action="@Url.Action("UpdateContentGroup", "ContentGroups")">
+                                <input type="hidden" name="id" value="@group.ContentGroupId" />
+                                <input type="hidden" name="courseId" value="@Model.Course.Id" />
+                                <div class="relative">
+                                    <input value="@group.Name" name="name" type="text" id="@floatingLabelId" aria-describedby="floating_helper_text" onclick="handlePropagation(event)" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                                    <label for="@floatingLabelId" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Nuevo nombre</label>
+                                </div>
+                                <!-- IsVisible -->
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    @{
+                                        if (group.IsVisible == true)
+                                        {
+                                            <input onclick="toggleIsVisible(event)" name="isVisible" type="checkbox" value="true" class="sr-only peer" checked>
+                                        }
+                                        else
+                                        {
+                                            <input onclick="toggleIsVisible(event)" name="isVisible" type="checkbox" value="false" class="sr-only peer">
+                                        }
+                                    }
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Visible</span>
+                                    <!-- Update content -->
+                                </label>
+                                <button class="my-1 p-3 text-gray-900 bg-white font-medium rounded border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                    </svg>
+                                </button>
+                            </form>
+                        }
+                    }
+
+                    <span class="@(Model.IsEditor == true ? "hidden" : null) editor-option">@group.Name</span>
+                    <svg data-accordion-icon class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </div>
+            </div>
+
+            // Different body style per position
+            string contentBodyClass = "";
+
+            if (i < 1 || (i > 0 && i < Model.ContentGroups.Count - 1))
+            {
+                contentBodyClass = "p-5 font-light border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-900";
+            }
+            else
+            {
+                contentBodyClass = "p-5 font-light border-2 border-t-0 border-gray-200 dark:border-gray-700";
+            }
+
+            // Body
+            <div id="accordion-collapse-body-@index" class="hidden" aria-labelledby="accordion-collapse-heading-@index">
+                <div class="@contentBodyClass">
+                    <!-- Content -->
+                    @{
+                        foreach (ContentListModel content in group.Contents)
+                        {
+                            indexContentGroup += 1;
+
+                            <div class="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white dark:bg-gray-900">
+                                @{
+                                    if (Model.IsEditor == true)
+                                    {
+                                        <div class="editor-option text-center mb-2">
+                                            <!-- Update content -->
+                                            <button onclick="@(content.FileId != null ? $"btnUpdateContentFileHandler({content.Id})" : $"btnUpdateContentHandler({content.Id})")" type="button" class="my-1 p-3 text-gray-900 bg-white font-medium rounded border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                                </svg>
+                                            </button>
+                                            <!-- Delete content -->
+                                            <a asp-controller="Content" asp-action="DeleteContent" asp-route-contentId="@content.Id" asp-route-courseId="@Model.Course.Id" class="inline-flex items-center my-1 p-3 text-gray-900 dark:text-white font-medium rounded border border-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-200 bg-red-400 hover:bg-red-200 dark:hover:bg-red-700 dark:bg-red-900 dark:border-gray-600 dark:hover:bg-red-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    }
+                                }
+                                <div class="flex justify-between px-4 mx-auto max-w-screen-xl ">
+                                    @{
+                                        if (content.Text != null)
+                                        {
+                                            <article id="@content.Id" class="mx-auto w-full max-w-2xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
+                                                @Html.Raw(Markdown.ToHtml(content.Text))
+                                            </article>
+                                        }
+                                        else if (content.File != null)
+                                        {
+                                            if (content.File.MimeType == "image/webp" || content.File.MimeType == "image/jpeg" || content.File.MimeType == "image/png" || content.File.MimeType == "image/gif")
+                                            {
+                                                <article id="@content.Id" class="mx-auto w-full max-w-2xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
+                                                    <img src="@content.File.Name" class="mx-auto" width="400" />
+                                                </article>
+                                            }
+                                            else if (content.File.MimeType == "application/pdf")
+                                            {
+                                                previewFiles.Add(new FilePreviewModel()
+                            {
+                                FileName = content.File.Name,
+                                Type = content.File.MimeType,
+                                TargetId = indexContentGroup
+                            });
+
+                                                <!-- PDF preview -->
+                                                <article value="@content.File.Name" id="@("content" + indexContentGroup)" class="pdf-preview mx-auto w-full max-w-2xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
+                                                    <!-- PDF preview -->
+                                                    <div id="@("previewContent" + indexContentGroup)" class="hidden">
+                                                        <!-- Prev button -->
+                                                        <button type="button" id="@("prev" + indexContentGroup)" class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                                                            <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                                                Previous
+                                                            </span>
+                                                        </button>
+                                                        <!-- Next button -->
+                                                        <button type="button" id=@("next" + indexContentGroup) class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
+                                                            <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                                                Next
+                                                            </span>
+                                                        </button>
+
+                                                        <!-- Page progress bar -->
+                                                        <div class="w-full bg-gray-200 rounded-full dark:bg-gray-700" style="max-height:20px">
+                                                            <div id="@("pageProgressBar" + indexContentGroup)" class="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" style="width: 0%">
+                                                                <span id="@("pageNum" + indexContentGroup)"></span> / <span id="@("pageCount" + indexContentGroup)"></span>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <!-- Preview pdf content canvas -->
+                                                        <canvas id="@("canvasPdfPreview" + indexContentGroup)" class="mx-auto" style="max-width:250px"></canvas>
+                                                    </div>
+                                                </article>
+                                            }
+                                            else if (content.File.MimeType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || content.File.MimeType == "application/vnd.ms-excel")
+                                            {
+                                                previewFiles.Add(new FilePreviewModel()
+                            {
+                                FileName = content.File.Name,
+                                Type = content.File.MimeType,
+                                TargetId = indexContentGroup
+                            });
+
+                                                <article value="@content.File.Name" id="@("content" + indexContentGroup)" class="mx-auto w-full max-w-2xl format format-sm sm:format-base lg:format-lg format-blue dark:format-invert">
+                                                    <!-- Excel preview -->
+                                                    <div id="@("tableDataPreview" + indexContentGroup)" class="mx-auto excel-preview relative overflow-x-auto max-w-36 max-h-72">
+                                                    </div>
+                                                </article>
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        }
+                        if (Model.IsEditor == true)
+                        {
+                            <div class="editor-option text-center">
+                                <button onclick="btnNewContentHandler(@group.ContentGroupId)" data-tooltip-target="tooltip-new-content-@index" type="button" class="p-4 text-gray-900 bg-white font-medium rounded border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    <span class="sr-only">Añadir nuevo contenido</span>
+                                </button>
+                                <div id="tooltip-new-content-@index" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                                    Añadir nuevo contenido
+                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        }
+    }
+</section>
+
+<!-- Editor -->
+<div id="editorWindow" class="hidden" style="margin: 50px auto;">
+    <form id="editorForm" action="" method="post" enctype="multipart/form-data">
+        @{
+            // Take userId from session
+            <input type="hidden" value="@userId" name="userId" />
+            // Take courseId from Model
+            <input type="hidden" value="@Model.Course.Id" name="courseId" />
+        }
+        <input id="groupId" type="hidden" value="0" name="groupId" />
+        <input id="contentId" type="hidden" value="0" name="contentId" />
+        <input name="hiddenFileInput" id="hiddenFileInput" type="file" class="hidden" />
+
+        <div class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+            <div class="flex flex-wrap items-center justify-between px-3 py-2 border-b dark:border-gray-600">
+                <div class="flex flex-wrap items-center divide-gray-200 sm:divide-x dark:divide-gray-600">
+                    <div class="flex items-center space-x-1 sm:pr-4">
+                        <!-- Upload file -->
+                        <button id="btn-upload-file" type="button" data-tooltip-target="tooltip-attach-file" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"></path></svg>
+                            <span class="sr-only">Subir archivo</span>
+                        </button>
+                        <div id="tooltip-attach-file" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                            Subir archivo
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+
+                        <!-- Upload image -->
+                        <button id="btn-upload-image" type="button" data-tooltip-target="tooltip-attach-image" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path></svg>
+                            <span class="sr-only">Subir imagen</span>
+                        </button>
+                        <div id="tooltip-attach-image" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                            Subir imagen
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+
+                    </div>
+                    <!-- Add list -->
+                    <div class="flex flex-wrap items-center space-x-1 sm:pl-4">
+                        <button id="btn-add-list" type="button" data-tooltip-target="tooltip-add-list" class="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+                            <span class="sr-only">Añadir lista</span>
+                        </button>
+                        <div id="tooltip-add-list" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                            Añadir lista
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                    </div>
+                </div>
+                <button id="close-editor" type="button" data-tooltip-target="tooltip-close-editor" class="p-2 text-gray-500 rounded cursor-pointer sm:ml-auto hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    <span class="sr-only">Cerrar editor</span>
+                </button>
+                <div id="tooltip-close-editor" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    Cerrar editor
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
+            </div>
+            <div class="flex flex-row justify-between">
+                <div class="w-1/2 m-5 mb-5 px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
+                    <label for="editor" class="sr-only">Publish post</label>
+                    <!-- Text Area -->
+                    <textarea id="editor" name="unsafeHtml" oninput="resizeTextArea(event)" cols="100" class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400 scrollbar-styled" placeholder="Acepta Markdown y HTML..."></textarea>
+
+                    <!-- Excel preview -->
+                    <div id="tableDataPreview" class="hidden relative overflow-x-auto max-w-36 max-h-72"></div>
+
+                    <!-- Image preview -->
+                    <div id="previewImage" class="hidden">
+                        <img class="h-auto max-w-xs" id="imgImagePreview" alt="image description" />
+                    </div>
+
+                    <!-- PDF preview -->
+                    <div id="previewContent" class="hidden">
+                        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
+                        <!-- Prev button -->
+                        <button type="button" id="prev" class="hidden relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                            <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                Previous
+                            </span>
+                        </button>
+                        <!-- Next button -->
+                        <button type="button" id="next" class="hidden relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
+                            <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                Next
+                            </span>
+                        </button>
+
+                        <!-- Page progress bar -->
+                        <div class="hidden w-full bg-gray-200 rounded-full dark:bg-gray-700" style="max-height:20px">
+                            <div id="pageProgressBar" class="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" style="width: 0%">
+                                <span id="page_num"></span> / <span id="page_count"></span>
+                            </div>
+                        </div>
+
+                        <!-- Preview pdf content canvas -->
+                        <canvas id="canvasPdfPreview" style="max-width:250px"></canvas>
+                    </div>
+
+                </div>
+                <div class="block w-1/2 m-5 px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800 scrollbar-hide">
+                    <!-- Markdown preview -->
+                    <div id="markdownPreview" class="format dark:format-invert"></div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" id="btnEditorSubmit" class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
+            Añadir sección
+        </button>
+    </form>
+</div>
+
+@section scripts {
+    <script src="~/js/filePreviewContentCourse.js" async ></script>
+    <script src="/js/pdfjs-3.3.122-dist/build/pdf.worker.js" async></script>
+    <script>
+        let previewFilesList = @Html.Raw(Json.Serialize(previewFiles));
+
+        $(document).ready(function () {
+            previewFilesList.forEach(file => {
+                const url = file.fileName;
+                const targetId = file.targetId;
+
+                var req = new XMLHttpRequest();
+                req.open("GET", url, true);
+                req.responseType = "blob";
+                req.onload = function (event) {
+                    var blob = req.response;
+
+                    var fileReader = new FileReader();
+                    fileReader.onload = function () {
+                        var data = fileReader.result;
+
+                        if (file.type == "application/pdf") {
+                            previewPdf(data, "previewContent" + targetId, "canvasPdfPreview" + targetId, "next" + targetId, "prev" + targetId, "pageNum" + targetId, "pageProgressBar" + targetId, "countId" + targetId);
+                        }
+
+                        if (file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || file.type == "application/vnd.ms-excel") {
+                            previewExcel(data, "tableDataPreview" + targetId);
+                        }
+                    };
+                    fileReader.readAsArrayBuffer(blob);
+                };
+
+                req.send();
+            });
+        });
+    </script>
+    <!-- Cargar los scripts solo para editor -->
+    @if (Model.IsEditor == true)
+    {
+        <text>
+            <script>
+                const converter = new showdown.Converter({ extensions: ['xssfilter'] });
+
+                function parseArticleMd(contentId, isFile) {
+                    const text = $(`#${contentId}`).html();
+                    const html = converter.makeHtml(text);
+                    $(`#${contentId}`).html(html);
+                }
+
+                function parseMarkdown() {
+                    const text = $("#editor").val();
+                    const html = converter.makeHtml(text);
+                    $("#markdownPreview").html(html);
+                }
+
+                $("#editor").keyup(function (e) {
+                    parseMarkdown();
+                });
+
+                function scrollToEditor() {
+                    $('html, body').animate({
+                        scrollTop: $("#editorWindow").offset().top - 100
+                    }, 1000);
+                }
+
+                function btnUpdateContentHandler(contentId) {
+                    // Get the content's Markdown (article tag)
+                    const id = "#" + contentId;
+                    let contentHtml = $(id).html().trim();
+
+                    // Parse the HTML to Markdown
+                    let contentMd = converter.makeMarkdown(contentHtml);
+                    $("#editor").html(contentMd);
+
+                    // Show the editor
+                    $("#editorWindow").removeClass("hidden");
+                    $("#btnEditorSubmit").text("Actualizar")
+                    // Set contentId hidden input value
+                    $("#contentId").val(contentId);
+                    // Update editor's form action
+                    document.getElementById("editorForm").action = "/Content/UpdateContent"
+                    // Display nicely the content's HTML in the editor preview
+                    parseMarkdown();
+                    scrollToEditor();
+                }
+
+                function btnUpdateContentFileHandler(contentId) {
+                    //// Show the editor
+                    $("#editorWindow").removeClass("hidden");
+                    $("#btnEditorSubmit").text("Actualizar")
+                    // Set contentId hidden input value
+                    $("#contentId").val(contentId);
+                    // Update editor's form action
+                    document.getElementById("editorForm").action = "/Content/UpdateContent"
+                    //document.getElementById(editor).placeholder = "No puedes "
+                    scrollToEditor();
+                }
+
+                function btnNewContentHandler(contentGroupId) {
+                    // Show the editor
+                    $("#editor").html("");
+                    $("#markdownPreview").html("");
+                    $("#editorWindow").toggleClass("hidden");
+                    $("#btnEditorSubmit").text("Añadir")
+                    // Sset groupId hidden input value
+                    $("#groupId").val(contentGroupId);
+                    // Update editor's form action
+                    document.getElementById("editorForm").action = "/Content/AddContent"
+                    scrollToEditor();
+                }
+
+                function handlePropagation(e) {
+                    e.stopPropagation();
+                }
+
+                function btnUpdateContentGroup() {
+                    $("#editorContentGroup").toggleClass("hidden");
+                }
+
+                function toggleIsVisible(e) {
+                    if (e.target.value == "false") {
+                        e.target.value = "true";
+                    } else {
+                        e.target.value = "false";
+                    }
+                }
+
+                // Upload file button
+                $("#btn-upload-file").click(function () {
+                    $("#hiddenFileInput").click();
+                });
+                // Upload image button
+                $("#btn-upload-image").click(function () {
+                    $("#hiddenFileInput").click();
+                });
+                // Add list button
+                $("#btn-add-list").click(function () {
+                    let initialHtml = $("#editor").html();
+                    initialHtml += "\n - item 1\n - item 2\n - item 3";
+                    $("#editor").html(initialHtml);
+                    parseMarkdown();
+                });
+
+                $(".editor-option").click(handlePropagation);
+
+                $("#close-editor").click(function () {
+                    $("#editor").html("");
+                    $("#editorWindow").toggleClass("hidden");
+                });
+
+                $("#toggleEditOptions").click(function () {
+                    $(".editor-option").toggle("fast");
+
+                    // If the editor window is shown, hide it
+                    if (!$("#editorWindow").hasClass("hidden")) {
+                        $("#editorWindow").toggle("fast");
+                    }
+                    if (!$("#editorContentGroup").hasClass("hidden")) {
+                        $("#editorContentGroup").toggle("fast");
+                    }
+                });
+            </script>
+        </text>
+    }
+}
+
+@{
+    if (lastSeenCourses != null)
+    {
+        <!-- Related courses -->
+        <aside aria-label="Cursos relacionados" class="py-4 rounded-lg bg-gray-50 dark:bg-gray-800" style="margin-top: 75px;">
+            <div class="px-4 mx-auto max-w-screen-xl">
+                <h2 class="mb-8 text-2xl font-bold text-gray-900 dark:text-white">Últimos cursos vistos</h2>
+                <div class="whitespace-nowrap overflow-hidden overflow-x-auto">
+                    @foreach (LastSeenCourse course in lastSeenCourses)
+                    {
+                        <article class="scale-hover-animation inline-block mx-4 max-w-xs overflow-hidden">
+                            <a asp-controller="Courses" asp-action="CourseDetails" asp-route-courseId="@course.Id">
+                                <img src="~/uploads/course_images/@course.Image" class="mb-2 rounded-lg" alt="Image 1" style="width: 15rem;">
+                            </a>
+                            <h2 class="mb-2 text-xl font-bold leading-tight text-gray-900 dark:text-white">
+                                <a asp-controller="Courses" asp-action="CourseDetails" asp-route-courseId="@course.Id">
+                                    <p class="font-light text-gray-500 dark:text-gray-400">@course.Name</p>
+                                </a>
+                            </h2>
+                            <p class="font-light text-gray-500 dark:text-gray-400">@course.Description[50..]</p>
+                        </article>
+                    }
+                </div>
+            </div>
+        </aside>
+    }
+}
+@{
+    // Course users
+    if (Model.IsEditor == true && Model.CourseUsers != null)
+    {
+        <!-- Course's users sidebar -->
+        <div id="drawer-backdrop" class="editor-option fixed top-0 left-0 z-50 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-white w-80 dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-backdrop-label">
+            <h5 id="drawer-backdrop-label" class="text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Usuarios</h5>
+            <button type="button" data-drawer-hide="drawer-backdrop" aria-controls="drawer-backdrop" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                <span class="sr-only">Cerrar menú</span>
+            </button>
+            <div class="py-4 overflow-y-auto">
+                <ul class="space-y-2">
+                    @{
+                        int indexDropdown = 0;
+
+                        foreach (CourseUsersModel user in Model.CourseUsers)
+                        {
+                            if (user.Id != userId)
+                            {
+                                indexDropdown += 1;
+                                <li>
+                                    <button type="button" class="flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-user-@indexDropdown" data-collapse-toggle="dropdown-user-@indexDropdown">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                        </svg>
+                                        <span class="flex-1 ml-3 text-left whitespace-nowrap">@user.UserName</span>
+                                        @{
+                                            if (user.IsEditor == true)
+                                            {
+                                                <span class="flex-1 ml-3 text-left whitespace-nowrap">✏️</span>
+                                            }
+                                        }
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                    </button>
+                                    <ul id="dropdown-user-@indexDropdown" class="hidden py-2 space-y-2">
+                                        <li>
+                                            <a asp-controller="Courses" asp-action="DeleteCourseUser" asp-route-courseId="@Model.Course.Id" asp-route-userId="@user.Id" class="flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                                Eliminar del curso
+                                            </a>
+                                        </li>
+                                        @{
+                                            if (user.IsEditor == true)
+                                            {
+                                                <li>
+                                                    <a asp-controller="Courses" asp-action="DeleteCourseEditor" asp-route-courseId="@Model.Course.Id" asp-route-userId="@user.Id" class="flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                                        Quitar editor
+                                                    </a>
+                                                </li>
+                                            }
+                                            else
+                                            {
+                                                <li>
+                                                    <a asp-controller="Courses" asp-action="AddCourseEditor" asp-route-courseId="@Model.Course.Id" asp-route-userId="@user.Id" class="flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                                        Añadir editor
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+}

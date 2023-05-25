@@ -1,0 +1,70 @@
+﻿@model List<AppUser>
+
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <caption class="p-5 text-lg font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+            Usuarios sin aprobar
+            <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">Al activar un usuario manualmente, se obviará el correo de confirmación enviado al mismo.</p>
+        </caption>
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Usuario
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Nombre
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Apellido
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Rol
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Fecha registro
+                </th>
+                <th scope="col" class="text-center px-6 py-3">
+                    Editar
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (AppUser user in Model)
+                {
+                    string activateModalId = "activate-modal-" + user.Id;
+
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                            <img class="w-10 h-10 rounded-full" src="~/uploads/profile_images/@user.Image" alt="@user.UserName image">
+                            <div class="pl-3">
+                                <div class="text-base font-semibold">@user.UserName</div>
+                                <div class="font-normal text-gray-500">@user.Email</div>
+                            </div>
+                        </th>
+                        <td class="px-6 py-4">
+                            @user.FirstName
+                        </td>
+                        <td class="px-6 py-4">
+                            @user.LastName
+                        </td>
+                        <td class="px-6 py-4">
+                            @user.Role
+                        </td>
+                        <td class="px-6 py-4">
+                            @user.SignedDate
+                        </td>
+                        <td class="px-6 py-4 flex items-center justify-center gap-4">
+                            <!-- Activate user -->
+                            <a asp-controller="Admin" asp-action="ApproveUser" asp-route-userId="@user.Id" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

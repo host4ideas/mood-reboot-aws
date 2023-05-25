@@ -1,0 +1,178 @@
+﻿@using MoodReboot.Services;
+@inject ServiceApiUsers serviceUsers
+@model List<ChatGroup>
+
+@{
+    string userName = Context.User.Identity.Name;
+    int userId = int.Parse(Context.User.FindFirstValue(ClaimTypes.NameIdentifier));
+}
+
+<aside id="chatsSidenav" class="hidden absolute w-64 overflow-y-auto z-50 border-2-b border-2-t border-2-r rounded-2-r border-gray-700 dark:border-gray-900 bg-gray-300 dark:bg-gray-800" style="left: 0; top: 75px; max-width: 300px;" aria-label="Sidebar">
+    <div class="px-3 py-4 overflow-y-auto rounded">
+        <ul class="space-y-2">
+            @{
+                foreach (ChatGroup group in Model)
+                {
+                    string dropdownBtnId = "chat-options-toggle-" + group.Id;
+                    string dropdownId = "chat-options-" + group.Id;
+                    string groupName = group.Name;
+                    bool isAdmin = false;
+                    List<ChatUserModel> users = await serviceUsers.GetChatGroupUsersAsync(group.Id);
+
+                    // If the group name is PRIVATE show the username of the other user as group name
+                    if (groupName == "PRIVATE")
+                    {
+                        foreach (ChatUserModel user in users)
+                        {
+                            if (user.UserName != userName)
+                            {
+                                groupName = user.UserName;
+                            }
+                        }
+                    }
+
+                    foreach (ChatUserModel user in users)
+                    {
+                        if (user.UserID == userId && user.IsAdmin == true)
+                        {
+                            isAdmin = true;
+                        }
+                    }
+
+                    <li onclick="loadChatMessages(@group.Id)" class="flex items-center justify-between rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer">
+                        <div class="flex items-center ml-2 p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+                            </svg>
+                            <div class="ml-3 text-sm">
+                                @groupName
+                            </div>
+                        </div>
+
+                        <button onclick="toggleChatOptions(event, '@dropdownId')" id="@dropdownBtnId" data-dropdown-toggle="@dropdownId" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm p-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+
+                        <!-- Dropdown chat group options -->
+                        <div id="@dropdownId" class="z-10 fixed hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600 border dark:border-gray-400">
+                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="@dropdownBtnId">
+                                @if (isAdmin == true)
+                                {
+                                    if (groupName != "PRIVATE")
+                                    {
+                                        <li>
+                                            <div onclick="editChatGroup(event, 'update', @group.Id, '@groupName')" class="w-full block px-4 py-2 hover:font-bold hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
+                                                Editar
+                                            </div>
+                                        </li>
+                                    }
+
+                                    <li onclick="editChatGroup(event, 'delete', @group.Id, null)" class="block px-4 py-2 hover:font-bold hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
+                                        Borrar chat
+                                    </li>
+                                }
+                                <li onclick="editChatGroup(event, 'out', @group.Id, null)" class="block px-4 py-2 hover:font-bold hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
+                                    Salir del grupo
+                                </li>
+                                <li onclick="editChatGroup(event, 'new')" class="block px-4 py-2 hover:font-bold hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
+                                    Nuevo chat
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+</aside>
+
+<div class="flex flex-col overflow-hidden">
+    <!-- Chat options -->
+    <div class="flex justify-center gap-6">
+        <button id="btnChatsSidenav" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+            <svg id="open-sidenav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
+            </svg>
+            <svg id="close-sidenav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="hidden w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <button onclick="resizeChatWindow(300)" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+            </svg>
+        </button>
+        <button onclick="resizeChatWindow(500)" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5h3m-6.75 2.25h10.5a2.25 2.25 0 002.25-2.25v-15a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 4.5v15a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+        </button>
+        <button onclick="resizeChatWindow(700)" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
+            </svg>
+        </button>
+    </div>
+    <hr class="h-px my-3 border-0 bg-gray-400" />
+
+    <div class="hidden text-center" id="new-chat-window-editor">
+        <h1 class="text-2xl mb-4">Nuevo chat</h1>
+        <button onclick="newChatGroup()" type="button" class="mb-4 focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                <path fill-rule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clip-rule="evenodd" />
+            </svg>
+        </button>
+    </div>
+
+    <div id="edit-chat-panel" class="hidden"></div>
+
+    <div id="search-users-chat-panel" class="hidden flex flex-col justify-center items-center gap-2">
+        <button onclick="toggleSearchUserChat()" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+            Añadir usuarios
+        </button>
+
+        <!-- Dropdown chat group options -->
+        <div id="dropdown-user-search" class="z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+            <input type="text" oninput="searchUsers(event)" class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Email o usuario">
+            <ul id="selected-search-users-chat" class="py-2 text-sm text-gray-700 dark:text-gray-200 max-h-72 overflow-y-auto overflow-x-hidden">
+            </ul>
+            <ul id="users-result-list" class="py-2 text-sm text-gray-700 dark:text-gray-200 max-h-72 overflow-y-auto overflow-x-hidden">
+            </ul>
+        </div>
+    </div>
+
+    <div id="chat-window-messages">
+        <!-- Messages list -->
+        <div id="messages-list-container">
+            <input id="hidden-userid" value="@userId" hidden />
+            <input id="hidden-username" value="@userName" hidden />
+            <input id="hiddenGroupId" value="" hidden />
+            <div class="row">
+                <div class="col-6">
+                    <ul id="messagesList" class="row overflow-y-auto" style="height: 340px;">
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input message with file upload -->
+        <div id="input-message-container" class="hidden bottom-0 mt-2">
+            <label for="chat" class="sr-only">Your message</label>
+            <div class="flex items-center px-2 py-2 rounded-lg bg-gray-50 dark:bg-gray-800">
+                <label for="hidden-file" title="Upload image" class="inline-flex justify-center p-2 text-gray-500 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+                    <svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path></svg>
+                    <span class="sr-only">Upload image</span>
+                </label>
+                <input type="file" id="hidden-file" name="file" class="hidden" />
+                <textarea id="messageInput" rows="1" class="block mx-2 p-2 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
+                <button type="submit" id="sendButton" value="Send Message" title="Send message" class="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600">
+                    <svg aria-hidden="true" class="w-6 h-6 rotate-90" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
+                    <span class="sr-only">Send message</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

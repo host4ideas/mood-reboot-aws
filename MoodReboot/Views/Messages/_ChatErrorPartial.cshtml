@@ -1,0 +1,27 @@
+﻿<div class="flex justify-center gap-6">
+    <button onclick="resizeChatWindow(300)" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+        <img src="~/images/icons/mobile-screen-button-solid.svg" width="20px" />
+    </button>
+    <button onclick="resizeChatWindow(500)" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+        <img src="~/images/icons/tablet-screen-button-solid.svg" width="20px" />
+    </button>
+    <button onclick="resizeChatWindow(700)" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+        <img src="~/images/icons/laptop-solid.svg" width="30px" />
+    </button>
+</div>
+
+<hr class="h-px my-3 bg-gray-200 border-0 dark:bg-gray-600" />
+
+<!-- Messages list -->
+<div class="row">
+    <div class="row">
+        <div class="col-2 dark:text-gray-200">Message</div>
+        <div class="col-4">
+            <!-- Input message with file upload -->
+            @*<form asp-controller="FileUpload" asp-action="Index" enctype="multipart/form-data" method="POST" accept-charset="">*@
+            <h2>@ViewData["ERROR"]</h2>
+            @*</form>*@
+        </div>
+        <div class="row">&nbsp;</div>
+    </div>
+</div>

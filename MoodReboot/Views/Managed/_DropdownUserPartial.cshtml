@@ -1,0 +1,30 @@
+﻿@{
+    string userId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+    string userImage = Context.User.FindFirstValue("IMAGE");
+}
+
+<button type="button" class="flex mx-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
+    <span class="sr-only">Open user menu</span>
+    <img class="w-8 h-8 rounded-full" src="@userImage" alt="user photo">
+</button>
+
+<!-- Dropdown menu -->
+<div class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown">
+    <div class="py-3 px-4">
+        <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil sims</span>
+        <span class="block text-sm font-light text-gray-500 truncate dark:text-gray-400">name@flowbite.com</span>
+    </div>
+    <ul class="py-1 font-light text-gray-500 dark:text-gray-400" aria-labelledby="dropdown">
+        <li>
+            <a asp-controller="Users" asp-action="Profile" asp-route-userId="@userId" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Perfil</a>
+        </li>
+        <li>
+            <a class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" asp-controller="Admin" asp-action="Index">Admin panel</a>
+        </li>
+    </ul>
+    <ul class="py-1 font-light text-gray-500 dark:text-gray-400" aria-labelledby="dropdown">
+        <li>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,178 @@
+﻿@model List<CourseListView>
+
+@{
+    Layout = "_MenuLayout";
+}
+
+@{
+    Center center = (Center)ViewData["CENTER"]!;
+}
+
+<section class="bg-white dark:bg-gray-900">
+    <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
+        <div class="mr-auto place-self-center lg:col-span-7">
+            <h1 class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
+                @center.Name
+            </h1>
+            <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">@center.Address</p>
+            <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">@center.Email</p>
+            @{
+                if (Context.User.Identity.IsAuthenticated == true)
+                {
+                    int userId = int.Parse(Context.User.FindFirstValue(ClaimTypes.NameIdentifier));
+                    bool isEditor = (bool)ViewData["IS_EDITOR"];
+
+                    if (userId == center.Director)
+                    {
+                        <a asp-controller="Centers" asp-action="EditorView" asp-route-centerId="@center.Id" class="block text-blue-700 hover:underline dark:text-blue-500">Editar contenidos</a>
+                        <a asp-controller="Centers" asp-action="DirectorView" asp-route-centerId="@center.Id" class="block text-blue-700 hover:underline dark:text-blue-500">Administrar centro</a>
+                    }
+                    else if (isEditor == true)
+                    {
+                        <a asp-controller="Centers" asp-action="EditorView" asp-route-centerId="@center.Id" class="text-blue-700 hover:underline dark:text-blue-500">Editar contenidos</a>
+                    }
+                }
+            }
+        </div>
+        <div class="flex justify-center md:w-full lg:col-span-5 m-5">
+            <img class="max-w-sm" src="~/uploads/center_images/@center.Image" alt="@center.Name Image">
+        </div>
+    </div>
+</section>
+
+<!-- Search -->
+<div class="flex justify-center items-center" style="margin-top: 20px;">
+    <label for="simple-search" class="sr-only">Search</label>
+    <div class="relative">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+        </div>
+        <input onkeyup="fuzzySearch()" type="text" id="simple-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Escribe..." required>
+    </div>
+    <button onclick="resetSearch()" class="px-2 py-2 ml-2 text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm text-center dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" title="Cancelar búsqueda">
+        <span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+            </svg>
+        </span>
+    </button>
+</div>
+
+@section scripts {
+    <script>
+        const list = @Html.Raw(Json.Serialize(Model));
+
+        function htmlListItem(editor, modified, description, published, course) {
+            let authorsHtml = "";
+
+            course.authors.forEach(author => {
+                authorsHtml += `
+                                                    <div class="flex items-center">
+                                                        <img class="mr-2 w-7 h-7 rounded-full" src="/uploads/profile_images/${author.image}" alt="${author.userName} avatar" />
+                                                        <span class="font-medium dark:text-white">
+                                                            ${author.userName}
+                                                        </span>
+                                                    </div>`
+            })
+
+            return `
+                                                <a href='/Courses/CourseDetails?courseId=${course.courseId}' class="flex flex-col gap-6 justify-between p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 overflow-hidden">
+                                                    <div class="flex justify-between flex-wrap items-center text-gray-500 overflow-hidden">
+                                                        <span class="text-sm">${course.centerName}</span>
+                                                            <div class="flex flex-col">
+                                                            <span class="text-sm">👁️ ${published}</span>
+                                                            <span class="text-sm">${modified}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="text-gray-500 overflow-hidden">
+                                                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">${course.courseName}</h5>
+                                                        <p class="font-normal text-gray-700 dark:text-gray-400">${description}</p>
+                                                    </div>
+
+                                                    <div class="flex flex-wrap gap-4 items-center justify-start overflow-y-scroll">
+                                                        ${authorsHtml}
+                                                        <span class="font-medium dark:text-white">
+                                                            ${editor}
+                                                        </span>
+                                                    </div>
+                                                </a>`;
+        }
+
+        function initialList() {
+            let html = '';
+            list.forEach(course => {
+                let editor = course.isEditor ? '✏️' : '';
+                let modified = course.dateModified != null ? '✏️ ' + new Date(course.dateModified).getDate() + "/" + new Date(course.dateModified).getMonth() + "/" + new Date(course.dateModified).getFullYear() : '';
+                let description = course.description;
+                let published = new Date(course.datePublished).getDate() + "/" + new Date(course.datePublished).getMonth() + "/" + new Date(course.datePublished).getFullYear();
+
+                if (description.length > 150) {
+                    description = description.slice(0, 147) + '...';
+                }
+
+                html += htmlListItem(editor, modified, description, published, course);
+            });
+
+            $("#courses-list").html(html);
+        }
+
+        function resetSearch() {
+            $("#simple-search").val('');
+            initialList();
+        }
+
+        initialList();
+
+        const options = {
+            keys: [
+                "description",
+                "name",
+                'centerName',
+                'author'
+            ]
+        };
+
+        const fuse = new Fuse(list, options);
+
+        function fuzzySearch() {
+            const pattern = $("#simple-search").val();
+
+            if (pattern == null || pattern == "") {
+                resetSearch();
+                return;
+            }
+
+            const results = fuse.search(pattern);
+
+            let html = "";
+            results.forEach(result => {
+                const course = result.item;
+                let editor = course.isEditor ? '✏️' : '';
+                let modified = course.dateModified != null ? '✏️ ' + new Date(course.dateModified).getDate() + "/" + new Date(course.dateModified).getMonth() + "/" + new Date(course.dateModified).getFullYear() : '';
+                let description = course.description;
+                let published = new Date(course.datePublished).getDate() + "/" + new Date(course.datePublished).getMonth() + "/" + new Date(course.datePublished).getFullYear();
+
+                if (description.length > 150) {
+                    description = description.slice(0, 147) + '...';
+                }
+
+                html += htmlListItem(editor, modified, description, published, course);
+            });
+
+            $("#courses-list").html(html);
+        }
+    </script>
+}
+
+<!-- My Courses -->
+<section class="bg-white dark:bg-gray-900">
+    <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-8 lg:px-6">
+        <div class="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
+            <h2 class="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Cursos del centro: @center.Name</h2>
+        </div>
+        <!-- Display all the courses -->
+        <div id="courses-list" class="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+        </div>
+    </div>
+</section>
