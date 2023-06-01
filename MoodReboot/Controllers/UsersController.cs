@@ -33,7 +33,7 @@ namespace MoodReboot.Controllers
             int userId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             AppUser? user = await this.serviceUsers.FindUserAsync(userId);
 
-            user.Image = await this.helperFile.GetBlobUriAsync(Containers.ProfileImages, user.Image);
+            user.Image = this.helperFile.GetBlobUri(Containers.ProfileImages, user.Image);
 
             return View(user);
         }
