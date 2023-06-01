@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using MoodReboot.Services;
 using NugetMoodReboot.Models;
-using System.Linq;
 using System.Security.Claims;
 
 namespace MoodReboot.Hubs
@@ -9,12 +8,10 @@ namespace MoodReboot.Hubs
     public class ChatHub : Hub
     {
         private readonly ServiceApiUsers serviceUsers;
-        private readonly ServiceContentModerator contentModerator;
 
-        public ChatHub(ServiceApiUsers serviceUsers, ServiceContentModerator contentModerator)
+        public ChatHub(ServiceApiUsers serviceUsers)
         {
             this.serviceUsers = serviceUsers;
-            this.contentModerator = contentModerator;
         }
 
         public async Task SendMessage(int userId, int groupChatId, string userName, string text, string fileId)
@@ -24,14 +21,14 @@ namespace MoodReboot.Hubs
 
         public async Task SendMessageToGroup(string userId, string groupChatId, string userName, string text)
         {
-            var result = this.contentModerator.ModerateText(text);
-            text = result.AutoCorrectedText;
-            var reviewNeeded = result.Classification.ReviewRecommended;
+            //var result = this.contentModerator.ModerateText(text);
+            //text = result.AutoCorrectedText;
+            //var reviewNeeded = result.Classification.ReviewRecommended;
 
-            if (reviewNeeded == true)
-            {
-                text = "Moderated message";
-            }
+            //if (reviewNeeded == true)
+            //{
+            //    text = "Moderated message";
+            //}
 
             // Send message to group
             await Clients.Group(groupChatId.ToString()).SendAsync(

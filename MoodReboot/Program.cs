@@ -1,35 +1,13 @@
-
 using Amazon.S3;
-using Amazon.SQS;
-using Azure.Security.KeyVault.Secrets;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Extensions.Azure;
 using MoodReboot.Helpers;
 using MoodReboot.Hubs;
 using MoodReboot.Services;
 using MvcCoreAWSS3.Services;
-using MvcLogicApps.Services;
 using NugetMoodReboot.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddAzureClients(factory =>
-{
-    factory.AddSecretClient(builder.Configuration.GetSection("KeyVault"));
-});
-
-SecretClient secretClient = builder.Services.BuildServiceProvider().GetService<SecretClient>();
-
-
-// SignalR
-
-KeyVaultSecret signalRendpointKey = await secretClient.GetSecretAsync("signalrendpoint");
-string signalrCnn = signalRendpointKey.Value;
-
-// Storage Account
-KeyVaultSecret storageKey = await secretClient.GetSecretAsync("storageurl");
-string azureStorageKeys = storageKey.Value;
 
 //string signalrCnn = builder.Configuration.GetConnectionString("SignalR");
 //string azureStorageKeys = builder.Configuration.GetValue<string>("AzureKeys:StorageAccount");
@@ -44,7 +22,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<HtmlSanitizer>();
 
 // SignalR
-builder.Services.AddSignalR().AddAzureSignalR(signalrCnn);
+builder.Services.AddSignalR();
 
 // AWS S3
 builder.Services.AddAWSService<IAmazonS3>();
@@ -56,12 +34,6 @@ builder.Services.AddTransient<ServiceApiContents>();
 builder.Services.AddTransient<ServiceApiContentGroups>();
 builder.Services.AddTransient<ServiceApiCourses>();
 builder.Services.AddTransient<ServiceApiUsers>();
-
-// Logic apps
-builder.Services.AddTransient<ServiceLogicApps>();
-
-// Content moderator
-builder.Services.AddTransient<ServiceContentModerator>();
 
 // Helpers
 builder.Services.AddSingleton<HelperApi>();
@@ -130,7 +102,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 
-// app.MapHub<ChatHub>("/chatHub");
+app.MapHub<ChatHub>("/chatHub");
 
 app.UseMvc(routes =>
 {
