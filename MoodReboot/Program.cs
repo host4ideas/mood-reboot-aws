@@ -20,14 +20,14 @@ SecretClient secretClient =
     builder.Services.BuildServiceProvider().GetService<SecretClient>();
 
 // SignalR
-KeyVaultSecret signalRendpointKey = await
-    secretClient.GetSecretAsync("signalrendpoint");
-string signalrCnn = signalRendpointKey.Value;
+// KeyVaultSecret signalRendpointKey = await
+//     secretClient.GetSecretAsync("signalrendpoint");
+// string signalrCnn = signalRendpointKey.Value;
 
 // Storage Account
-KeyVaultSecret storageKey = await
-    secretClient.GetSecretAsync("storageurl");
-string azureStorageKeys = storageKey.Value;
+// KeyVaultSecret storageKey = await
+//     secretClient.GetSecretAsync("storageurl");
+// string azureStorageKeys = storageKey.Value;
 
 //string signalrCnn = builder.Configuration.GetConnectionString("SignalR");
 //string azureStorageKeys = builder.Configuration.GetValue<string>("AzureKeys:StorageAccount");
@@ -45,9 +45,9 @@ builder.Services.AddSingleton<HtmlSanitizer>();
 builder.Services.AddSignalR().AddAzureSignalR(signalrCnn);
 
 // Azure storage blobs
-BlobServiceClient blobServiceClient = new(azureStorageKeys);
-builder.Services.AddSingleton(blobServiceClient);
-builder.Services.AddTransient<ServiceStorageBlob>();
+// BlobServiceClient blobServiceClient = new(azureStorageKeys);
+// builder.Services.AddSingleton(blobServiceClient);
+// builder.Services.AddTransient<ServiceStorageBlob>();
 
 // Api Services
 builder.Services.AddTransient<ServiceApiCenters>();
@@ -65,7 +65,7 @@ builder.Services.AddTransient<ServiceContentModerator>();
 // Helpers
 builder.Services.AddSingleton<HelperApi>();
 builder.Services.AddSingleton<HelperCryptography>();
-builder.Services.AddTransient<HelperFileAzure>();
+// builder.Services.AddTransient<HelperFileAzure>();
 builder.Services.AddSingleton<HelperMail>();
 
 // Session
@@ -130,7 +130,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 
-app.MapHub<ChatHub>("/chatHub");
+// app.MapHub<ChatHub>("/chatHub");
 
 app.UseMvc(routes =>
 {
