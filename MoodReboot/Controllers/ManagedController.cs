@@ -70,7 +70,7 @@ namespace MoodReboot.Controllers
             Claim claimRole = new(ClaimTypes.Role, user.Role);
             identity.AddClaim(claimRole);
 
-            string imageUrl = await this.helperFile.GetBlobUriAsync(Containers.ProfileImages, user.Image);
+            string imageUrl = this.helperFile.GetBlobUri(Containers.ProfileImages, user.Image);
             Claim claimImage = new("IMAGE", imageUrl);
             identity.AddClaim(claimImage);
 
