@@ -1,4 +1,6 @@
+
 using Amazon.S3;
+using Amazon.SQS;
 using Azure.Security.KeyVault.Secrets;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -17,17 +19,16 @@ builder.Services.AddAzureClients(factory =>
     factory.AddSecretClient(builder.Configuration.GetSection("KeyVault"));
 });
 
-SecretClient secretClient =
-    builder.Services.BuildServiceProvider().GetService<SecretClient>();
+SecretClient secretClient = builder.Services.BuildServiceProvider().GetService<SecretClient>();
+
 
 // SignalR
-KeyVaultSecret signalRendpointKey = await
-    secretClient.GetSecretAsync("signalrendpoint");
+
+KeyVaultSecret signalRendpointKey = await secretClient.GetSecretAsync("signalrendpoint");
 string signalrCnn = signalRendpointKey.Value;
 
 // Storage Account
-KeyVaultSecret storageKey = await
-    secretClient.GetSecretAsync("storageurl");
+KeyVaultSecret storageKey = await secretClient.GetSecretAsync("storageurl");
 string azureStorageKeys = storageKey.Value;
 
 //string signalrCnn = builder.Configuration.GetConnectionString("SignalR");
@@ -66,7 +67,6 @@ builder.Services.AddTransient<ServiceContentModerator>();
 builder.Services.AddSingleton<HelperApi>();
 builder.Services.AddSingleton<HelperCryptography>();
 builder.Services.AddTransient<HelperFileAWS>();
-builder.Services.AddSingleton<HelperMail>();
 
 // Session
 builder.Services.AddDistributedMemoryCache();
@@ -130,7 +130,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 
-app.MapHub<ChatHub>("/chatHub");
+// app.MapHub<ChatHub>("/chatHub");
 
 app.UseMvc(routes =>
 {

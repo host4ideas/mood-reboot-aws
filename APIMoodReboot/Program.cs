@@ -1,16 +1,19 @@
 using APIMoodReboot.Data;
 using APIMoodReboot.Helpers;
+using APIMoodReboot.Models;
 using APIMoodReboot.Repositories;
 using Ganss.Xss;
 using Microsoft.EntityFrameworkCore;
 using NugetMoodReboot.Helpers;
 using NugetMoodReboot.Interfaces;
+using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+SecretAWS secretos = await HelperSecret.GetSecret();
 
-string connectionString = builder.Configuration.GetConnectionString("AWS");
+string connectionString = secretos.RDSConnectionString;
 
 builder.Services.AddDbContext<MoodRebootContext>(options =>
 {
