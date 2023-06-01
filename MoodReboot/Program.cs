@@ -1,3 +1,4 @@
+using Amazon.SQS;
 using Azure.Security.KeyVault.Secrets;
 using Azure.Storage.Blobs;
 using Ganss.Xss;
@@ -16,18 +17,17 @@ builder.Services.AddAzureClients(factory =>
     factory.AddSecretClient(builder.Configuration.GetSection("KeyVault"));
 });
 
-SecretClient secretClient =
-    builder.Services.BuildServiceProvider().GetService<SecretClient>();
+SecretClient secretClient = builder.Services.BuildServiceProvider().GetService<SecretClient>();
+
 
 // SignalR
-// KeyVaultSecret signalRendpointKey = await
-//     secretClient.GetSecretAsync("signalrendpoint");
-// string signalrCnn = signalRendpointKey.Value;
+
+KeyVaultSecret signalRendpointKey = await secretClient.GetSecretAsync("signalrendpoint");
+string signalrCnn = signalRendpointKey.Value;
 
 // Storage Account
-// KeyVaultSecret storageKey = await
-//     secretClient.GetSecretAsync("storageurl");
-// string azureStorageKeys = storageKey.Value;
+KeyVaultSecret storageKey = await secretClient.GetSecretAsync("storageurl");
+string azureStorageKeys = storageKey.Value;
 
 //string signalrCnn = builder.Configuration.GetConnectionString("SignalR");
 //string azureStorageKeys = builder.Configuration.GetValue<string>("AzureKeys:StorageAccount");
