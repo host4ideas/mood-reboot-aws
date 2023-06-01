@@ -2,23 +2,23 @@
 {
     public enum Containers { ProfileImages, PublicContent, PrivateContent }
 
-    public static class HelperPathAzure
+    public static class HelperPathAWS
     {
-        public static string MapContainerPath(Containers container)
+        public static string MapBucketName(Containers container)
         {
             string carpeta = "";
 
             if (container == Containers.ProfileImages)
             {
-                carpeta = "profileimages";
+                carpeta = "moodreboot-profile-images";
             }
             else if (container == Containers.PublicContent)
             {
-                carpeta = "publiccontent";
+                carpeta = "moodreboot-public-content";
             }
             else if (container == Containers.PrivateContent)
             {
-                carpeta = "privatecontent";
+                carpeta = "moodreboot-private-content";
             }
 
             return carpeta;
