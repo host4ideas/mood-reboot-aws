@@ -7,12 +7,10 @@ namespace MoodReboot.Helpers
     public class HelperFileAWS
     {
         private readonly ServiceStorageS3 serviceStorage;
-        private readonly ServiceContentModerator contentModerator;
 
-        public HelperFileAWS(ServiceStorageS3 serviceStorage, ServiceContentModerator contentModerator)
+        public HelperFileAWS(ServiceStorageS3 serviceStorage)
         {
             this.serviceStorage = serviceStorage;
-            this.contentModerator = contentModerator;
         }
 
         public Task DeleteFile(int fileId)
@@ -122,19 +120,19 @@ namespace MoodReboot.Helpers
 
                 await this.serviceStorage.UploadFileAsync(fileName, stream, container);
 
-                if (fileType == FileTypes.Image)
-                {
-                    string urlFile = this.GetBlobUri(container, fileName);
+                //if (fileType == FileTypes.Image)
+                //{
+                //    string urlFile = this.GetBlobUri(container, fileName);
 
-                    var result = await this.contentModerator.ModerateImageAsync(urlFile);
+                //    var result = await this.contentModerator.ModerateImageAsync(urlFile);
 
-                    if (result.ImageModeration.IsImageAdultClassified == true ||
-                    result.ImageModeration.IsImageRacyClassified == true)
-                    {
-                        await this.DeleteFileAsync(container, fileName);
-                        return false;
-                    }
-                }
+                //    if (result.ImageModeration.IsImageAdultClassified == true ||
+                //    result.ImageModeration.IsImageRacyClassified == true)
+                //    {
+                //        await this.DeleteFileAsync(container, fileName);
+                //        return false;
+                //    }
+                //}
 
                 return true;
             }
@@ -207,19 +205,19 @@ namespace MoodReboot.Helpers
                 using Stream stream = file.OpenReadStream();
                 await this.serviceStorage.UploadFileAsync(fileName, stream, container);
 
-                if (fileType == FileTypes.Image)
-                {
-                    string urlFile = this.GetBlobUri(container, fileName);
+                //if (fileType == FileTypes.Image)
+                //{
+                //    string urlFile = this.GetBlobUri(container, fileName);
 
-                    var result = await this.contentModerator.ModerateImageAsync(urlFile);
+                //    var result = await this.contentModerator.ModerateImageAsync(urlFile);
 
-                    if (result.ImageModeration.IsImageAdultClassified == true ||
-                    result.ImageModeration.IsImageRacyClassified == true)
-                    {
-                        await this.DeleteFileAsync(container, fileName);
-                        return false;
-                    }
-                }
+                //    if (result.ImageModeration.IsImageAdultClassified == true ||
+                //    result.ImageModeration.IsImageRacyClassified == true)
+                //    {
+                //        await this.DeleteFileAsync(container, fileName);
+                //        return false;
+                //    }
+                //}
 
                 return true;
             }
