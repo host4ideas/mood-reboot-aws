@@ -118,15 +118,13 @@ namespace MoodReboot.Helpers
 
             if (isValid)
             {
-                string containerBlob = HelperPathAWS.MapContainerPath(container);
-
                 using Stream stream = file.OpenReadStream();
 
-                await this.serviceStorage.UploadBlobAsync(containerBlob, fileName, stream);
+                await this.serviceStorage.UploadFileAsync(fileName, stream, container);
 
                 if (fileType == FileTypes.Image)
                 {
-                    string urlFile = await this.GetBlobUriAsync(container, fileName);
+                    string urlFile = this.GetBlobUri(container, fileName);
 
                     var result = await this.contentModerator.ModerateImageAsync(urlFile);
 
@@ -206,14 +204,12 @@ namespace MoodReboot.Helpers
 
             if (isValid)
             {
-                string containerBlob = HelperPathAWS.MapContainerPath(container);
-
                 using Stream stream = file.OpenReadStream();
-                await this.serviceStorage.UpdateBlobAsync(containerBlob, fileName, stream);
+                await this.serviceStorage.UploadFileAsync(fileName, stream, container);
 
                 if (fileType == FileTypes.Image)
                 {
-                    string urlFile = await this.GetBlobUriAsync(container, fileName);
+                    string urlFile = this.GetBlobUri(container, fileName);
 
                     var result = await this.contentModerator.ModerateImageAsync(urlFile);
 
@@ -231,16 +227,15 @@ namespace MoodReboot.Helpers
             return false;
         }
 
-        public async Task<string> GetBlobUriAsync(Containers container, string blobName)
+        public string GetBlobUri(Containers container, string blobName)
         {
-            string containerAzure = HelperPathAWS.MapContainerPath(container);
-            return await this.serviceStorage.GetBlobUriAsync(containerAzure, blobName);
+            string containerAzure = HelperPathAWS.MapBucketName(container);
+            return $"https://{containerAzure}.s3.us-east-1.amazonaws.com/" + blobName;
         }
 
         public async Task DeleteFileAsync(Containers container, string blobName)
         {
-            string containerAzure = HelperPathAWS.MapContainerPath(container);
-            await this.serviceStorage.DeleteBlobAsync(containerAzure, blobName);
+            await this.serviceStorage.DeleteFileAsync(blobName, container);
         }
     }
 }
