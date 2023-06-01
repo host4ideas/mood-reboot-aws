@@ -15,9 +15,9 @@ namespace MoodReboot.Controllers
         private readonly ServiceApiContents serviceContents;
         private readonly ServiceApiContentGroups serviceCtnGroups;
         private readonly ServiceApiUsers serviceUsers;
-        private readonly HelperFileAzure helperFileAzure;
+        private readonly HelperFileAWS helperFileAzure;
 
-        public CoursesController(ServiceApiCourses serviceCourses, ServiceApiContents serviceContents, ServiceApiContentGroups serviceCtnGroups, ServiceApiUsers serviceUsers, HelperFileAzure helperFileAzure)
+        public CoursesController(ServiceApiCourses serviceCourses, ServiceApiContents serviceContents, ServiceApiContentGroups serviceCtnGroups, ServiceApiUsers serviceUsers, HelperFileAWS helperFileAzure)
         {
             this.serviceCourses = serviceCourses;
             this.serviceContents = serviceContents;

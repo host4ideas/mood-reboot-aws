@@ -1,12 +1,14 @@
+
+using Amazon.S3;
 using Amazon.SQS;
 using Azure.Security.KeyVault.Secrets;
-using Azure.Storage.Blobs;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Azure;
 using MoodReboot.Helpers;
 using MoodReboot.Hubs;
 using MoodReboot.Services;
+using MvcCoreAWSS3.Services;
 using MvcLogicApps.Services;
 using NugetMoodReboot.Helpers;
 
@@ -44,10 +46,9 @@ builder.Services.AddSingleton<HtmlSanitizer>();
 // SignalR
 builder.Services.AddSignalR().AddAzureSignalR(signalrCnn);
 
-// Azure storage blobs
-// BlobServiceClient blobServiceClient = new(azureStorageKeys);
-// builder.Services.AddSingleton(blobServiceClient);
-// builder.Services.AddTransient<ServiceStorageBlob>();
+// AWS S3
+builder.Services.AddAWSService<IAmazonS3>();
+builder.Services.AddTransient<ServiceStorageS3>();
 
 // Api Services
 builder.Services.AddTransient<ServiceApiCenters>();
@@ -65,8 +66,7 @@ builder.Services.AddTransient<ServiceContentModerator>();
 // Helpers
 builder.Services.AddSingleton<HelperApi>();
 builder.Services.AddSingleton<HelperCryptography>();
-// builder.Services.AddTransient<HelperFileAzure>();
-builder.Services.AddSingleton<HelperMail>();
+builder.Services.AddTransient<HelperFileAWS>();
 
 // Session
 builder.Services.AddDistributedMemoryCache();
