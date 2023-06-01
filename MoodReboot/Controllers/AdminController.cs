@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MoodReboot.Services;
 using MvcCoreSeguridadEmpleados.Filters;
-using MvcLogicApps.Services;
-using NugetMoodReboot.Helpers;
 using NugetMoodReboot.Models;
 
 namespace MoodReboot.Controllers
@@ -13,14 +11,12 @@ namespace MoodReboot.Controllers
         private readonly ServiceApiUsers serviceUsers;
         private readonly ServiceApiCenters serviceCenters;
         private readonly ServiceApiCourses serviceCourses;
-        private readonly ServiceLogicApps serviceLogicApps;
 
-        public AdminController(ServiceApiUsers serviceUsers, ServiceApiCenters serviceCenters, ServiceApiCourses serviceCourses, ServiceLogicApps serviceLogicApps)
+        public AdminController(ServiceApiUsers serviceUsers, ServiceApiCenters serviceCenters, ServiceApiCourses serviceCourses)
         {
             this.serviceUsers = serviceUsers;
             this.serviceCenters = serviceCenters;
             this.serviceCourses = serviceCourses;
-            this.serviceLogicApps = serviceLogicApps;
         }
 
         public IActionResult Index()
@@ -55,7 +51,7 @@ namespace MoodReboot.Controllers
                 string protocol = HttpContext.Request.IsHttps ? "https" : "http";
                 string domainName = HttpContext.Request.Host.Value.ToString();
                 string baseUrl = protocol + domainName;
-                await this.serviceLogicApps.SendMailAsync(center.Email, "Centro aprobado", "Tu centro ha sido aprobado en la plataforma MoodReboot, puedes iniciar sesión en tu perfil y empezar a administrarlo", baseUrl);
+                //await this.serviceLogicApps.SendMailAsync(center.Email, "Centro aprobado", "Tu centro ha sido aprobado en la plataforma MoodReboot, puedes iniciar sesión en tu perfil y empezar a administrarlo", baseUrl);
             }
             return RedirectToAction("Requests");
         }
@@ -69,7 +65,7 @@ namespace MoodReboot.Controllers
                 string protocol = HttpContext.Request.IsHttps ? "https" : "http";
                 string domainName = HttpContext.Request.Host.Value.ToString();
                 string baseUrl = protocol + domainName;
-                await this.serviceLogicApps.SendMailAsync(user.Email, "Usuario aprobado", "Tu cuenta en MoodReboot ha sido activada, por favor, inicia sesión con tu cuenta para empezar a utilizar nuestra plataforma.", baseUrl);
+                //await this.serviceLogicApps.SendMailAsync(user.Email, "Usuario aprobado", "Tu cuenta en MoodReboot ha sido activada, por favor, inicia sesión con tu cuenta para empezar a utilizar nuestra plataforma.", baseUrl);
             }
             return RedirectToAction("Requests");
         }
