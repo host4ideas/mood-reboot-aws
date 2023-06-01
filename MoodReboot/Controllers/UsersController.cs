@@ -12,10 +12,10 @@ namespace MoodReboot.Controllers
     public class UsersController : Controller
     {
         private readonly ServiceApiUsers serviceUsers;
-        private readonly HelperFileAzure helperFile;
+        private readonly HelperFileAWS helperFile;
         private readonly ServiceLogicApps serviceLogicApps;
 
-        public UsersController(ServiceApiUsers serviceUsers, HelperFileAzure helperFile, ServiceLogicApps serviceLogicApps)
+        public UsersController(ServiceApiUsers serviceUsers, HelperFileAWS helperFile, ServiceLogicApps serviceLogicApps)
         {
             this.serviceUsers = serviceUsers;
             this.helperFile = helperFile;
