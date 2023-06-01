@@ -12,9 +12,9 @@ namespace MoodReboot.Controllers
         private readonly ServiceApiContents serviceContents;
         private readonly ServiceApiUsers serviceUsers;
         private readonly HtmlSanitizer sanitizer;
-        private readonly HelperFileAzure helperFile;
+        private readonly HelperFileAWS helperFile;
 
-        public ContentController(ServiceApiContents serviceContents, ServiceApiUsers serviceUsers, HtmlSanitizer sanitizer, HelperFileAzure helperFile)
+        public ContentController(ServiceApiContents serviceContents, ServiceApiUsers serviceUsers, HtmlSanitizer sanitizer, HelperFileAWS helperFile)
         {
             this.serviceContents = serviceContents;
             this.serviceUsers = serviceUsers;
