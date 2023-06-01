@@ -16,17 +16,15 @@ builder.Services.AddAzureClients(factory =>
     factory.AddSecretClient(builder.Configuration.GetSection("KeyVault"));
 });
 
-SecretClient secretClient =
-    builder.Services.BuildServiceProvider().GetService<SecretClient>();
+SecretClient secretClient = builder.Services.BuildServiceProvider().GetService<SecretClient>();
+
 
 // SignalR
-KeyVaultSecret signalRendpointKey = await
-    secretClient.GetSecretAsync("signalrendpoint");
+KeyVaultSecret signalRendpointKey = await secretClient.GetSecretAsync("signalrendpoint");
 string signalrCnn = signalRendpointKey.Value;
 
 // Storage Account
-KeyVaultSecret storageKey = await
-    secretClient.GetSecretAsync("storageurl");
+KeyVaultSecret storageKey = await secretClient.GetSecretAsync("storageurl");
 string azureStorageKeys = storageKey.Value;
 
 //string signalrCnn = builder.Configuration.GetConnectionString("SignalR");
