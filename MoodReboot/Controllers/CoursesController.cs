@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Amazon.IVS.Model;
+using Microsoft.AspNetCore.Mvc;
 using MoodReboot.Extensions;
 using MoodReboot.Helpers;
 using MoodReboot.Services;
@@ -16,14 +17,16 @@ namespace MoodReboot.Controllers
         private readonly ServiceApiContentGroups serviceCtnGroups;
         private readonly ServiceApiUsers serviceUsers;
         private readonly HelperFileAWS helperFileAzure;
+        private readonly ServiceIVS serviceIVS;
 
-        public CoursesController(ServiceApiCourses serviceCourses, ServiceApiContents serviceContents, ServiceApiContentGroups serviceCtnGroups, ServiceApiUsers serviceUsers, HelperFileAWS helperFileAzure)
+        public CoursesController(ServiceApiCourses serviceCourses, ServiceApiContents serviceContents, ServiceApiContentGroups serviceCtnGroups, ServiceApiUsers serviceUsers, HelperFileAWS helperFileAzure, ServiceIVS serviceIVS)
         {
             this.serviceCourses = serviceCourses;
             this.serviceContents = serviceContents;
             this.serviceCtnGroups = serviceCtnGroups;
             this.serviceUsers = serviceUsers;
             this.helperFileAzure = helperFileAzure;
+            this.serviceIVS = serviceIVS;
         }
 
         public IActionResult Index()
@@ -214,6 +217,26 @@ namespace MoodReboot.Controllers
                         Course = course,
                         IsEditor = false
                     };
+                }
+
+                //datos del streaming
+                Channel data = await this.serviceIVS.GetChannelByName(courseId.ToString());
+
+                ViewData["URL"] = data.PlaybackUrl;
+                ViewData["SERVER"] = "rtmps://" + data.IngestEndpoint + ":443/app/";
+
+                string arnStreamKey = await this.serviceIVS.GetStreamKeyFromChannelArn(data.Arn);
+                ViewData["STREAMKEY"] = await this.serviceIVS.GetStreamKey(arnStreamKey);
+
+                Amazon.IVS.Model.Stream isLive = await this.serviceIVS.IsLive(data.Arn);
+                if (isLive == null)
+                {
+                    ViewData["LIVE"] = false;
+                }
+                else
+                {
+                    ViewData["LIVE"] = true;
+                    ViewData["INICIO"] = isLive.StartTime;
                 }
 
                 return View(details);
