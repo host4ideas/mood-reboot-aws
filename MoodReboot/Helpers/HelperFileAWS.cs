@@ -228,7 +228,7 @@ namespace MoodReboot.Helpers
         public string GetBlobUri(Containers container, string blobName)
         {
             string containerAzure = HelperPathAWS.MapBucketName(container);
-            return $"https://{containerAzure}.s3.us-east-1.amazonaws.com/" + blobName;
+            return $"https://{containerAzure}.s3.amazonaws.com/" + blobName;
         }
 
         public async Task DeleteFileAsync(Containers container, string blobName)
