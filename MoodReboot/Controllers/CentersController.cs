@@ -3,7 +3,6 @@ using MoodReboot.Helpers;
 using MoodReboot.Models;
 using MoodReboot.Services;
 using MvcCoreSeguridadEmpleados.Filters;
-using MvcLogicApps.Services;
 using NugetMoodReboot.Helpers;
 using NugetMoodReboot.Models;
 using System.ComponentModel;
@@ -15,14 +14,12 @@ namespace MoodReboot.Controllers
     {
         private readonly ServiceApiCenters serviceCenters;
         private readonly ServiceApiCourses serviceCourses;
-        private readonly ServiceLogicApps serviceLogicApps;
         private readonly HelperFileAWS helperFile;
 
-        public CentersController(ServiceApiCourses serviceCourses, ServiceApiCenters serviceCenters, ServiceLogicApps serviceLogicApps, HelperFileAWS helperFile)
+        public CentersController(ServiceApiCourses serviceCourses, ServiceApiCenters serviceCenters, HelperFileAWS helperFile)
         {
             this.serviceCenters = serviceCenters;
             this.serviceCourses = serviceCourses;
-            this.serviceLogicApps = serviceLogicApps;
             this.helperFile = helperFile;
         }
 
@@ -224,7 +221,7 @@ namespace MoodReboot.Controllers
             string protocol = HttpContext.Request.IsHttps ? "https" : "http";
             string domainName = HttpContext.Request.Host.Value.ToString();
             string baseUrl = protocol + domainName;
-            await this.serviceLogicApps.SendMailAsync(email, "Aprobación de centro en curso", "Estamos en proceso de aprobar su solicitud de creación de centro. Por favor, si ha cometido algún error en los datos o quisiera cancelar la operación. Mande un correo a: moodreboot@gmail.com", baseUrl);
+            //await this.serviceLogicApps.SendMailAsync(email, "Aprobación de centro en curso", "Estamos en proceso de aprobar su solicitud de creación de centro. Por favor, si ha cometido algún error en los datos o quisiera cancelar la operación. Mande un correo a: moodreboot@gmail.com", baseUrl);
             ViewData["MESSAGE"] = "Solicitud enviada";
             return View();
         }

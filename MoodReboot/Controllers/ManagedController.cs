@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using MoodReboot.Helpers;
 using MoodReboot.Services;
-using MvcLogicApps.Services;
 using NugetMoodReboot.Helpers;
 using NugetMoodReboot.Models;
 using System.Security.Claims;
@@ -14,13 +13,11 @@ namespace MoodReboot.Controllers
     {
         private readonly HelperFileAWS helperFile;
         private readonly ServiceApiUsers serviceUsers;
-        private readonly ServiceLogicApps serviceLogicApps;
 
-        public ManagedController(HelperFileAWS helperFile, ServiceLogicApps serviceLogicApps, ServiceApiUsers serviceUsers)
+        public ManagedController(HelperFileAWS helperFile, ServiceApiUsers serviceUsers)
         {
             this.serviceUsers = serviceUsers;
             this.helperFile = helperFile;
-            this.serviceLogicApps = serviceLogicApps;
         }
 
         public IActionResult AccessError()
@@ -106,7 +103,7 @@ namespace MoodReboot.Controllers
                     Link = url
                 }
             };
-                await this.serviceLogicApps.SendMailAsync(user.Email, "Confirmación de cuenta", "Se ha solicitado una petición para crear una cuenta en MoodReboot con este correo electrónico. Pulsa el siguiente enlace para confirmarla. Si no has sido tu el solicitante no te procupes, la petición será cancelada en un período de 24hrs.", links, baseUrl);
+                //await this.serviceLogicApps.SendMailAsync(user.Email, "Confirmación de cuenta", "Se ha solicitado una petición para crear una cuenta en MoodReboot con este correo electrónico. Pulsa el siguiente enlace para confirmarla. Si no has sido tu el solicitante no te procupes, la petición será cancelada en un período de 24hrs.", links, baseUrl);
 
                 ViewData["SUCCESS"] = "Correo de confirmación enviado";
                 return View("Login");
@@ -169,7 +166,7 @@ namespace MoodReboot.Controllers
                     Link = url
                 }
             };
-            await this.serviceLogicApps.SendMailAsync(email, "Confirmación de cuenta", "Se ha solicitado una petición para crear una cuenta en MoodReboot con este correo electrónico. Pulsa el siguiente enlace para confirmarla. Si no has sido tu el solicitante no te procupes, la petición será cancelada en un período de 24hrs.", links, baseUrl);
+            //await this.serviceLogicApps.SendMailAsync(email, "Confirmación de cuenta", "Se ha solicitado una petición para crear una cuenta en MoodReboot con este correo electrónico. Pulsa el siguiente enlace para confirmarla. Si no has sido tu el solicitante no te procupes, la petición será cancelada en un período de 24hrs.", links, baseUrl);
 
             ViewData["SUCCESS"] = "Revisa tu correo electrónico";
             return View();

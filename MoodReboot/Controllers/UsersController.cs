@@ -2,7 +2,6 @@
 using MoodReboot.Helpers;
 using MoodReboot.Services;
 using MvcCoreSeguridadEmpleados.Filters;
-using MvcLogicApps.Services;
 using NugetMoodReboot.Helpers;
 using NugetMoodReboot.Models;
 using System.Security.Claims;
@@ -13,13 +12,11 @@ namespace MoodReboot.Controllers
     {
         private readonly ServiceApiUsers serviceUsers;
         private readonly HelperFileAWS helperFile;
-        private readonly ServiceLogicApps serviceLogicApps;
 
-        public UsersController(ServiceApiUsers serviceUsers, HelperFileAWS helperFile, ServiceLogicApps serviceLogicApps)
+        public UsersController(ServiceApiUsers serviceUsers, HelperFileAWS helperFile)
         {
             this.serviceUsers = serviceUsers;
             this.helperFile = helperFile;
-            this.serviceLogicApps = serviceLogicApps;
         }
 
         public async Task<List<Tuple<string, int>>> SearchUsers(string pattern)
@@ -110,7 +107,7 @@ namespace MoodReboot.Controllers
             string protocol = HttpContext.Request.IsHttps ? "https" : "http";
             string domainName = HttpContext.Request.Host.Value.ToString();
             string baseUrl = protocol + domainName;
-            await this.serviceLogicApps.SendMailAsync(email, "Cambio de datos", "Se ha solicitado una petición para cambiar el correo electrónico de la cuenta asociada. Pulsa el siguiente enlace para confirmarla. Una vez cambiada deberás de iniciar sesión con el nuevo correo electónico, si surge cualquier problema o tienes alguna duda, contáctanos a: moodreboot@gmail.com. <br/><br/> Si no eres solicitante no te procupes, la petición será cancelada en un período de 24hrs.", links, baseUrl);
+            //await this.serviceLogicApps.SendMailAsync(email, "Cambio de datos", "Se ha solicitado una petición para cambiar el correo electrónico de la cuenta asociada. Pulsa el siguiente enlace para confirmarla. Una vez cambiada deberás de iniciar sesión con el nuevo correo electónico, si surge cualquier problema o tienes alguna duda, contáctanos a: moodreboot@gmail.com. <br/><br/> Si no eres solicitante no te procupes, la petición será cancelada en un período de 24hrs.", links, baseUrl);
         }
 
         #endregion
@@ -159,7 +156,7 @@ namespace MoodReboot.Controllers
             string protocol = HttpContext.Request.IsHttps ? "https" : "http";
             string domainName = HttpContext.Request.Host.Value.ToString();
             string baseUrl = protocol + domainName;
-            await this.serviceLogicApps.SendMailAsync(email, "Cambio de datos", "Se ha solicitado una petición para cambiar la contraseña de la cuenta asociada. Pulsa el siguiente enlace para confirmarla. Una vez cambiada deberás de iniciar sesión con el nuevo correo electónico, si surge cualquier problema o tienes alguna duda, contáctanos a: moodreboot@gmail.com. <br/><br/> Si no eres solicitante no te procupes, la petición será cancelada en un período de 24hrs.", links, baseUrl);
+            //await this.serviceLogicApps.SendMailAsync(email, "Cambio de datos", "Se ha solicitado una petición para cambiar la contraseña de la cuenta asociada. Pulsa el siguiente enlace para confirmarla. Una vez cambiada deberás de iniciar sesión con el nuevo correo electónico, si surge cualquier problema o tienes alguna duda, contáctanos a: moodreboot@gmail.com. <br/><br/> Si no eres solicitante no te procupes, la petición será cancelada en un período de 24hrs.", links, baseUrl);
         }
 
         #endregion
