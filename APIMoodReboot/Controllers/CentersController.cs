@@ -83,9 +83,9 @@ namespace APIMoodReboot.Controllers
         {
             int firstEditorId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            bool result = await this.helperCourse.CreateCourse(newCourse.CenterId, firstEditorId, newCourse.Name, newCourse.IsVisible, newCourse.Image, newCourse.Description, newCourse.Password);
+            int? courseId = await this.helperCourse.CreateCourse(newCourse.CenterId, firstEditorId, newCourse.Name, newCourse.IsVisible, newCourse.Image, newCourse.Description, newCourse.Password);
 
-            if (!result)
+            if (courseId != null)
             {
                 return BadRequest("Error al crear el curso");
             }

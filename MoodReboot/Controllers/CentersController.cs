@@ -115,12 +115,16 @@ namespace MoodReboot.Controllers
             }
             else
             {
-                bool result = await this.serviceCenters.CreateCourseAsync(centerId, name, isVisible, fileName, description, password);
+                int? courseId = await this.serviceCenters.CreateCourseAsync(centerId, name, isVisible, fileName, description, password);
 
-                if (!result)
+                // If not created
+                if (courseId == null)
                 {
                     ViewData["ERROR"] = "Error al crear el curso";
                 }
+
+                // If created
+
             }
 
             return RedirectToAction("EditorView");
