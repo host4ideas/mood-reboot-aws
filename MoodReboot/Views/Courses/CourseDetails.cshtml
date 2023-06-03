@@ -3,6 +3,8 @@
 
 @{
     Layout = "_MenuLayout";
+    string streamKey = ViewData["STREAMKEY"] as string;
+    string urlStream = ViewData["URL"] as string;
 }
 
 @{
@@ -45,19 +47,63 @@
             <!-- drawer init and toggle -->
             <div class="editor-option text-center">
                 <button type="button" data-drawer-target="drawer-backdrop" data-drawer-show="drawer-backdrop" data-drawer-backdrop="true" aria-controls="drawer-backdrop" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-800 dark:hover:bg-red-700 dark:focus:ring-red-900">Mostrar usuarios del curso</button>
-                <div class="stream-info">
-                    <p>Servidor: @ViewData["SERVER"]</p>
-                    <p>Stream Key: @ViewData["STREAMKEY"]</p>
+                <p class="text-2xl lg:text-2xl p-4 tracking-tight font-semibold text-gray-900 dark:text-white">Datos de retransmision</p>
+                <div class="stream-info border-2 border-gray-500 text-gray-900 dark:text-white">
+                    <p class="font-normal text-lg">Servidor: @ViewData["SERVER"]</p>
+                    <div class="font-normal text-lg stream-key">
+                        Stream Key:<input class="stream-key-input" type="password" value="@streamKey" id="streamKey" />
+                        <button id="watchStreamKey">
+                            <svg width="24" height="24" viewBox="0 0 673 534" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M440 267C440 322.23 395.23 367 340 367C284.77 367 240 322.23 240 267C240 211.77 284.77 167 340 167C395.23 167 440 211.77 440 267Z" stroke="currentColor" stroke-width="66.6667" />
+                                <path d="M171.658 102.008C262.781 10.8859 410.52 10.8859 501.64 102.008L572.353 172.719C616.797 217.163 639.02 239.387 639.02 267C639.02 294.613 616.797 316.837 572.353 361.28L501.64 431.99C410.52 523.113 262.781 523.113 171.658 431.99L100.948 361.28C56.503 316.837 34.281 294.613 34.281 267C34.281 239.387 56.503 217.163 100.948 172.719L171.658 102.008Z" stroke="currentColor" stroke-width="66.6667" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <button onclick="copyStreamKey()">
+                            <svg class="fill-current" width="24" height="24" viewBox="0 0 680 680" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path class="fill-current" fill-rule="evenodd" clip-rule="evenodd"
+                                  d="M80 0C58.7827 0 38.4344 8.42854 23.4315 23.4315C8.42854 38.4344 0 58.7827 0 80V440C0 461.217 8.42854 481.566 23.4315 496.569C38.4344 511.571 58.7827 520 80 520H160V600C160 621.217 168.429 641.566 183.431 656.569C198.434 671.571 218.783 680 240 680H600C621.217 680 641.566 671.571 656.569 656.569C671.571 641.566 680 621.217 680 600V240C680 218.783 671.571 198.434 656.569 183.431C641.566 168.429 621.217 160 600 160H520V80C520 58.7827 511.571 38.4344 496.569 23.4315C481.566 8.42854 461.217 0 440 0H80ZM440 160V80H80V440H160V240C160 218.783 168.429 198.434 183.431 183.431C198.434 168.429 218.783 160 240 160H440ZM240 240H600V600H240V240Z"
+                                  fill="black" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         }
     }
     <div class="curso-header">
         <h2 class="text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Contenidos</h2>
-        <div class=" font-medium btn-live">
-            En directo
-            <div class="live"></div>
-        </div>
+        @{
+            if (ViewData["LIVE"] is true)
+            {
+                <div id="liveBTN" class=" font-medium btn-live text-gray-900 dark:text-white">
+                    En directo
+                    <div class="live"></div>
+                </div>
+
+                <div class="stream-modal bg-gray-50 dark:bg-gray-800 border-2 border-gray-500 text-gray-900 dark:text-white">
+                    <div class="stream-header">
+                        <p class="text-2xl lg:text-2xl p-4 tracking-tight font-semibold text-gray-900 dark:text-white">Clase en directo:</p>
+                        <svg id="closeLive" width="40" height="40" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M300 300L399.997 399.997M399.997 399.997L499.997 499.997M399.997 399.997L300 499.997M399.997 399.997L499.997 300M400 700C234.315 700 100 565.687 100 400C100 234.315 234.315 100 400 100C565.687 100 700 234.315 700 400C700 565.687 565.687 700 400 700Z"
+                              stroke="currentColor" stroke-width="66.6667" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <hr>
+                    <div class="stream">
+                        <div class="inner">
+                            <!-- Player wrapper, forcing 16:9 aspect ratio -->
+                            <div class="player-wrapper">
+                                <div class="aspect-spacer"></div>
+                                <div class="pos-absolute full-width full-height top-0">
+                                    <video id="video-player" class="el-player" playsinline></video>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
     </div>
 
 
@@ -713,7 +759,6 @@
         box-shadow: 0px 0px 10px #f03629;
         border-radius: 10px;
         padding: 5px 20px;
-        color: white;
         transition: all 0.5s ease !important;
     }
 
@@ -747,18 +792,450 @@
         }
     }
 
-    .stream-info{
-        width:fit-content;
-        margin:auto;
-        border: 2px solid #f03629;
-        border-radius:10px;
-        padding:10px;
+    .stream-info {
+        width: fit-content;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 10px;
+        padding: 5px 20px;
     }
 
-    .stream-info > p{
-        width:fit-content;
-        color:white;
-        padding:10px 0px;
+        .stream-info > p {
+            width: fit-content;
+            padding: 10px 0px;
+        }
+
+    @@keyframes palpitacionBorder {
+        0% {
+            border: 2px solid #ffbeba;
+        }
+
+        50% {
+            border: 2px solid #f01f11;
+        }
+
+        100% {
+            border: 2px solid #ffbeba;
+        }
     }
 
+    .stream-key {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .stream-key-input {
+        background-color: transparent;
+        border: none;
+        width: 350px;
+        border-radius: 10px;
+    }
+
+    .stream-modal {
+        display:none;
+        border-radius: 20px;
+        position: fixed;
+        left: 15vw;
+        top: 5vh;
+        width: 70vw;
+        z-index:100;
+    }
+
+    .stream-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #closeLive {
+        border-radius: 100px;
+        width: min-content;
+        float: right;
+        margin-right: 10px;
+        z-index: 100;
+    }
+
+    .stream {
+        width: 100%;
+        padding: 20px;
+    }
+
+</style>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script>
+
+
+
+    $("#watchStreamKey").click(function () {
+        if ($('#streamKey').attr('type') == 'password') {
+            document.getElementById('streamKey').type = 'text';
+        }
+        else {
+            document.getElementById('streamKey').type = 'password';
+        }
+    })
+
+
+    function copyStreamKey() {
+        // Seleccionar el campo de entrada de contraseña
+        var campoPassword = $("#streamKey");
+        // Crear un elemento de texto temporal
+        var tempElement = $("<input>");
+        // Asignar el valor del campo de contraseña al elemento de texto temporal
+        tempElement.val(campoPassword.val());
+        // Agregar el elemento temporal al cuerpo del documento
+        $("body").append(tempElement);
+        // Seleccionar el contenido del elemento de texto temporal
+        tempElement.select();
+        // Copiar el contenido seleccionado al portapapeles
+        document.execCommand("copy");
+        // Eliminar el elemento temporal del cuerpo del documento
+        tempElement.remove();
+        // Mostrar un mensaje de éxito
+        alert("La clave de retransmision ha sido copiada al portapapeles.");
+    }
+
+    $("#liveBTN").click(function () {
+        $(".stream-modal").toggle("fast")
+    })
+
+    $("#closeLive").click(function () {
+        $(".stream-modal").toggle("fast")
+    })
+
+
+</script>
+
+
+<script>
+
+    const playbackUrl = "@urlStream";
+    const videoPlayer = document.getElementById("video-player");
+    const quizEl = document.getElementById("quiz");
+    const waitMessage = document.getElementById("waiting");
+    const questionEl = document.getElementById("question");
+    const answersEl = document.getElementById("answers");
+    const cardInnerEl = document.getElementById("card-inner");
+
+    (function (IVSPlayer) {
+        const PlayerState = IVSPlayer.PlayerState;
+        const PlayerEventType = IVSPlayer.PlayerEventType;
+
+        // Initialize player
+        const player = IVSPlayer.create();
+        player.attachHTMLVideoElement(videoPlayer);
+
+        // Attach event listeners
+        player.addEventListener(PlayerState.PLAYING, function () {
+            console.log("Player State - PLAYING");
+        });
+        player.addEventListener(PlayerState.ENDED, function () {
+            console.log("Player State - ENDED");
+        });
+        player.addEventListener(PlayerState.READY, function () {
+            console.log("Player State - READY");
+        });
+        player.addEventListener(PlayerEventType.ERROR, function (err) {
+            console.warn("Player Event - ERROR:", err);
+        });
+
+        player.addEventListener(PlayerEventType.TEXT_METADATA_CUE, function (cue) {
+            console.log("Timed metadata: ", cue.text);
+            const metadataText = cue.text;
+            const position = player.getPosition().toFixed(2);
+            console.log(
+                `PlayerEvent - METADATA: "${metadataText}". Observed ${position}s after playback started.`
+            );
+            triggerQuiz(metadataText);
+        });
+
+        // Setup stream and play
+        player.setAutoplay(true);
+        player.load(playbackUrl);
+
+        // Setvolume
+        player.setVolume(0.1);
+
+        // Remove card
+        function removeCard() {
+            quizEl.classList.toggle("drop");
+        }
+
+        // Trigger quiz
+        function triggerQuiz(metadataText) {
+            let obj = JSON.parse(metadataText);
+
+            quizEl.style.display = "";
+            quizEl.classList.remove("drop");
+            waitMessage.style.display = "none";
+            cardInnerEl.style.display = "none";
+            cardInnerEl.style.pointerEvents = "auto";
+
+            while (answersEl.firstChild) answersEl.removeChild(answersEl.firstChild);
+            questionEl.textContent = obj.question;
+
+            let createAnswers = function (obj, i) {
+                let q = document.createElement("a");
+                let qText = document.createTextNode(obj.answers[i]);
+                answersEl.appendChild(q);
+                q.classList.add("answer");
+                q.appendChild(qText);
+
+                q.addEventListener("click", (event) => {
+                    cardInnerEl.style.pointerEvents = "none";
+                    if (q.textContent === obj.answers[obj.correctIndex]) {
+                        q.classList.toggle("correct");
+                    } else {
+                        q.classList.toggle("wrong");
+                    }
+                    setTimeout(function () {
+                        removeCard();
+                        waitMessage.style.display = "";
+                    }, 1050);
+                    return false;
+                });
+            };
+
+            for (var i = 0; i < obj.answers.length; i++) {
+                createAnswers(obj, i);
+            }
+            cardInnerEl.style.display = "";
+        }
+
+    })(window.IVSPlayer);
+
+</script>
+
+
+<style>
+    @@media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+
+    /* Variables */
+    :root {
+        --radius: 12px;
+        --text-color-light: #000;
+        --text-alt-color-light: #777;
+        --text-color-dark: #fff;
+        --text-alt-color-dark: #777;
+        --bg-color-light: #e9e9e9;
+        --bg-color-dark: #28292d;
+        --bg-alt-color-light: #e9e9e9;
+        --bg-alt-color-dark: #28292d;
+    }
+
+
+
+
+    .player-wrapper {
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        transform: translate3d(0, 0, 0);
+        backface-visibility: hidden;
+        border-radius: var(--radius);
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+        z-index: 1;
+    }
+
+    .aspect-spacer {
+        padding-bottom: 56.25%;
+    }
+
+    .el-player {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        background: #000;
+        border-radius: var(--radius);
+    }
+
+    video {
+        width: 100%;
+        border-radius: var(--radius);
+        background: #000;
+    }
+
+    .quiz-wrap {
+        min-height: 460px;
+        position: relative;
+        transition: all 0.25s ease-in;
+    }
+
+    .card {
+        margin: 0 20px;
+        padding: 20px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+        transition: all 1s cubic-bezier(1, -0.56, 0, 1);
+        transform: translate3d(0, 0, 0) scale(1);
+        backface-visibility: hidden;
+        z-index: 1;
+    }
+
+        .card.drop {
+            opacity: 0;
+            transform: translate3d(0, 200px, -20px) scale(0.92);
+        }
+
+    h2 {
+        font-size: 25px;
+        text-align: center;
+        padding-bottom: 20px;
+    }
+
+    .answer {
+        height: 50px;
+        line-height: 50px;
+        font-size: 20px;
+        display: flex;
+        text-decoration: none;
+        border: 1px solid #d5dbdb;
+        border-radius: 50px;
+        padding: 0 24px;
+        margin: 10px 0;
+        background: #fafafa;
+        color: #545b64;
+        transition: all 0.05s ease-in-out;
+    }
+
+        .answer:hover {
+            background: #ebebebe0;
+        }
+
+        .answer:active {
+            background: #ff9900;
+            border: 1px solid #eb5f07;
+            color: #fff;
+        }
+
+        .answer.correct {
+            background: #25a702;
+            border: 1px solid #1d8102;
+            color: #fff;
+            animation: blink 0.45s infinite;
+        }
+
+        .answer.wrong {
+            background: #d13212;
+            border: 1px solid #b7290d;
+            color: #fff;
+            animation: blink 0.45s infinite;
+        }
+
+    #waiting {
+        top: 100px;
+        left: 0;
+        right: 0;
+        position: absolute;
+        display: flex;
+        align-items: center;
+    }
+
+    .waiting-text {
+        width: 100%;
+        display: block;
+        text-align: center;
+        font-size: 18px;
+        color: #d5dbdb;
+    }
+
+    .float {
+        transform: translatey(0px);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    /* Utility - Position */
+    .pos-absolute {
+        position: absolute !important;
+    }
+
+    .pos-fixed {
+        position: fixed !important;
+    }
+
+    .pos-relative {
+        position: relative !important;
+    }
+
+    .top-0 {
+        top: 0 !important;
+    }
+
+    .bottom-0 {
+        bottom: 0 !important;
+    }
+
+    /* Utility - Width/Height */
+    .full-width {
+        width: 100%;
+    }
+
+    .full-height {
+        height: 100%;
+    }
+
+    /* Utility – Show/Hide */
+    .show {
+        transition: opacity 180ms;
+    }
+
+    .hide {
+        opacity: 0;
+    }
+
+    /* Animations */
+    @@keyframes blink {
+        50% {
+            opacity: 0.8;
+        }
+    }
+
+    @@keyframes float {
+        0% {
+            transform: translatey(0px);
+        }
+
+        50% {
+            transform: translatey(-20px);
+        }
+
+        100% {
+            transform: translatey(0px);
+        }
+    }
+
+    /* Mediaqueries */
+    @@media (max-width: 767px) {
+        h2 {
+            font-size: 20px;
+        }
+
+        .card {
+            top: -20px;
+        }
+    }
+
+    @@media (min-width: 767px) {
+        .card {
+            top: -25%;
+        }
+    }
 </style>
