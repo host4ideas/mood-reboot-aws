@@ -17,7 +17,7 @@ namespace APIMoodReboot.Helpers
             this.repositoryUsers = repositoryUsers;
         }
 
-        public async Task<int?> CreateCourse(int centerId, int firstEditorId, string name, bool isVisible, string? path, string? description, string? password)
+        public async Task<int> CreateCourse(int centerId, int firstEditorId, string name, bool isVisible, string? path, string? description, string? password)
         {
             try
             {

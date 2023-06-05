@@ -28,7 +28,7 @@ namespace MoodReboot.Services
             };
 
             string token = this.httpContextAccessor.HttpContext.Session.GetString("TOKEN");
-            var response = await this.helperApi.PostAsync(Consts.ApiCourses + "/CreateCourse", model, token);
+            var response = await this.helperApi.PostAsync(Consts.ApiCenters + "/CreateCourse", model, token);
 
             if (response.IsSuccessStatusCode)
             {

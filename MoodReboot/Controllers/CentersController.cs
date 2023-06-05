@@ -120,12 +120,15 @@ namespace MoodReboot.Controllers
                 int? courseId = await this.serviceCenters.CreateCourseAsync(centerId, name, isVisible, fileName, description, password);
 
                 //Creamos el canal para el IVS
-                await this.serviceIVS.CreateChannel(courseId.ToString());
 
                 // If not created
                 if (courseId == null)
                 {
                     ViewData["ERROR"] = "Error al crear el curso";
+                }
+                else
+                {
+                    await this.serviceIVS.CreateChannel(courseId.ToString());
                 }
 
                 // If created
