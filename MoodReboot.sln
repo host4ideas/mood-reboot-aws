@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIMoodReboot", "APIMoodReb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailServiceMoodReboot", "EmailServiceMoodReboot\EmailServiceMoodReboot.csproj", "{49B0F8B3-BA5D-4184-A459-C8BFFB428DEB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextModerationService", "TextModerationService\TextModerationService.csproj", "{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{49B0F8B3-BA5D-4184-A459-C8BFFB428DEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49B0F8B3-BA5D-4184-A459-C8BFFB428DEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49B0F8B3-BA5D-4184-A459-C8BFFB428DEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
