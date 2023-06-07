@@ -152,7 +152,7 @@ namespace MoodReboot.Controllers
                             contentFile.File = await this.serviceUsers.FindFileAsync(ctn.FileId.Value);
 
                             // Transform the name of the file to the URI of it
-                            contentFile.File.Name = this.helperFileAzure.GetBlobUri(Containers.PrivateContent, contentFile.File.Name);
+                            contentFile.File.Name = await this.helperFileAzure.GetBlobBase64(Containers.PrivateContent, contentFile.File.Name);
                         }
 
                         contentFileList.Add(contentFile);
