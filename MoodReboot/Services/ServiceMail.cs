@@ -17,7 +17,6 @@ namespace MoodReboot.Services {
 
         public async Task<HttpResponseMessage> PostAsync(string request, object? body) {
             using HttpClient httpClient = HttpClientFactory.CreateClient();
-            //httpClient.BaseAddress = new Uri(this.UrlEmailService);
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             if (body == null) {

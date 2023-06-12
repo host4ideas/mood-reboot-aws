@@ -8,7 +8,7 @@
     "AspNetCoreFunction": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "Handler": "APIMoodRebootAWSAWS::APIMoodRebootAWSAWS.LambdaEntryPoint::FunctionHandlerAsync",
+        "Handler": "ImageModeration::ImageModeration.LambdaEntryPoint::FunctionHandlerAsync",
         "Runtime": "dotnet6",
         "CodeUri": "",
         "MemorySize": 256,
