@@ -17,37 +17,44 @@ namespace APIMoodReboot.Helpers
             this.repositoryUsers = repositoryUsers;
         }
 
-        public async Task<bool> CreateCourse(int centerId, int firstEditorId, string name, bool isVisible, string? path, string? description, string? password)
+        public async Task<int> CreateCourse(int centerId, int firstEditorId, string name, bool isVisible, string? path, string? description, string? password)
         {
-            // Chat group name max 40 characters
-            string chatGroupName = "FORO " + name;
-            // Create chat group
-            int chatGroupId = await repositoryUsers.NewChatGroupAsync(new HashSet<int> { firstEditorId }, firstEditorId, chatGroupName);
-
-            int newCourseId = await repositoryCourses.GetMaxCourseAsync();
-
-            if (path == null)
+            try
             {
-                path = "default_course_image.jpeg";
+                // Chat group name max 40 characters
+                string chatGroupName = "FORO " + name;
+                // Create chat group
+                int chatGroupId = await repositoryUsers.NewChatGroupAsync(new HashSet<int> { firstEditorId }, firstEditorId, chatGroupName);
+
+                int newCourseId = await repositoryCourses.GetMaxCourseAsync();
+
+                if (path == null)
+                {
+                    path = "default_course_image.jpeg";
+                }
+
+                // Create the course
+                await context.Courses.AddAsync(new Course()
+                {
+                    CenterId = centerId,
+                    DateModified = DateTime.Now,
+                    DatePublished = DateTime.Now,
+                    Description = description,
+                    Image = path,
+                    Password = password,
+                    GroupId = chatGroupId,
+                    Id = newCourseId,
+                    IsVisible = isVisible,
+                    Name = name,
+                });
+
+                await context.SaveChangesAsync();
+                return newCourseId;
             }
-
-            // Create the course
-            await context.Courses.AddAsync(new Course()
+            catch (Exception e)
             {
-                CenterId = centerId,
-                DateModified = DateTime.Now,
-                DatePublished = DateTime.Now,
-                Description = description,
-                Image = path,
-                Password = password,
-                GroupId = chatGroupId,
-                Id = newCourseId,
-                IsVisible = isVisible,
-                Name = name,
-            });
-
-            await context.SaveChangesAsync();
-            return true;
+                return default;
+            }
         }
     }
 }

@@ -15,12 +15,14 @@ namespace MoodReboot.Controllers
         private readonly ServiceApiCenters serviceCenters;
         private readonly ServiceApiCourses serviceCourses;
         private readonly HelperFileAWS helperFile;
+        private readonly ServiceIVS serviceIVS;
 
-        public CentersController(ServiceApiCourses serviceCourses, ServiceApiCenters serviceCenters, HelperFileAWS helperFile)
+        public CentersController(ServiceApiCourses serviceCourses, ServiceApiCenters serviceCenters, HelperFileAWS helperFile, ServiceIVS serviceIVS)
         {
             this.serviceCenters = serviceCenters;
             this.serviceCourses = serviceCourses;
             this.helperFile = helperFile;
+            this.serviceIVS = serviceIVS;
         }
 
         public async Task<IActionResult> Index()
@@ -115,12 +117,22 @@ namespace MoodReboot.Controllers
             }
             else
             {
-                bool result = await this.serviceCenters.CreateCourseAsync(centerId, name, isVisible, fileName, description, password);
+                int? courseId = await this.serviceCenters.CreateCourseAsync(centerId, name, isVisible, fileName, description, password);
 
-                if (!result)
+                //Creamos el canal para el IVS
+
+                // If not created
+                if (courseId == null)
                 {
                     ViewData["ERROR"] = "Error al crear el curso";
                 }
+                else
+                {
+                    await this.serviceIVS.CreateChannel(courseId.ToString());
+                }
+
+                // If created
+
             }
 
             return RedirectToAction("EditorView");

@@ -15,7 +15,7 @@ namespace MoodReboot.Services
             this.httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<bool> CreateCourseAsync(int centerId, string name, bool isVisible, string image, string description, string password)
+        public async Task<int?> CreateCourseAsync(int centerId, string name, bool isVisible, string image, string description, string password)
         {
             CreateCourseApiModel model = new()
             {
@@ -28,14 +28,14 @@ namespace MoodReboot.Services
             };
 
             string token = this.httpContextAccessor.HttpContext.Session.GetString("TOKEN");
-            var response = await this.helperApi.PostAsync(Consts.ApiCourses + "/CreateCourse", model, token);
+            var response = await this.helperApi.PostAsync(Consts.ApiCenters + "/CreateCourse", model, token);
 
             if (response.IsSuccessStatusCode)
             {
-                return true;
+                return int.Parse(await response.Content.ReadAsStringAsync());
             }
 
-            return false;
+            return default;
         }
 
         public async Task AddEditorsCenterAsync(int centerId, List<int> userIds)

@@ -225,10 +225,36 @@ namespace MoodReboot.Helpers
             return false;
         }
 
-        public string GetBlobUri(Containers container, string blobName)
+        /// <summary>
+        /// Only for public objects
+        /// </summary>
+        /// <param name="container"></param>
+        /// <param name="blobName"></param>
+        /// <returns></returns>
+        public string GetBlobPublicUri(Containers container, string blobName)
         {
             string containerAzure = HelperPathAWS.MapBucketName(container);
-            return $"https://{containerAzure}.s3.us-east-1.amazonaws.com/" + blobName;
+            return $"https://{containerAzure}.s3.amazonaws.com/" + blobName;
+        }
+
+        /// <summary>
+        /// Retrieves the Base64 encoded content of an object
+        /// </summary>
+        /// <param name="containers"></param>
+        /// <param name="blobName"></param>
+        /// <returns></returns>
+        public async Task<string> GetBlobBase64(Containers containers, string blobName)
+        {
+            string fileContent;
+            using (Stream imageStream = await this.serviceStorage.GetFileAsync(blobName, containers))
+            {
+                using MemoryStream memoryStream = new();
+                await imageStream.CopyToAsync(memoryStream);
+                byte[] bytes = memoryStream.ToArray();
+                string base64Image = Convert.ToBase64String(bytes);
+                fileContent = "data:;base64," + base64Image;
+            }
+            return fileContent;
         }
 
         public async Task DeleteFileAsync(Containers container, string blobName)

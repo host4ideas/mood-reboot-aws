@@ -11,6 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIMoodReboot", "APIMoodReb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailServiceMoodReboot", "EmailServiceMoodReboot\EmailServiceMoodReboot.csproj", "{49B0F8B3-BA5D-4184-A459-C8BFFB428DEB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextModerationService", "TextModerationService\TextModerationService.csproj", "{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}"
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSLambdaRekognition", "..\GiovannyCortes\AWSLambdaRekognition\AWSLambdaRekognition\AWSLambdaRekognition.csproj", "{F6D20049-3102-4BDB-8C1E-FC23E1EBE814}"
 EndProject
 Global
@@ -35,6 +36,10 @@ Global
 		{49B0F8B3-BA5D-4184-A459-C8BFFB428DEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49B0F8B3-BA5D-4184-A459-C8BFFB428DEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49B0F8B3-BA5D-4184-A459-C8BFFB428DEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F6D20049-3102-4BDB-8C1E-FC23E1EBE814}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F6D20049-3102-4BDB-8C1E-FC23E1EBE814}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6D20049-3102-4BDB-8C1E-FC23E1EBE814}.Release|Any CPU.ActiveCfg = Release|Any CPU
