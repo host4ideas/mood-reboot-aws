@@ -12,7 +12,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailServiceMoodReboot", "EmailServiceMoodReboot\EmailServiceMoodReboot.csproj", "{49B0F8B3-BA5D-4184-A459-C8BFFB428DEB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextModerationService", "TextModerationService\TextModerationService.csproj", "{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}"
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSLambdaRekognition", "..\GiovannyCortes\AWSLambdaRekognition\AWSLambdaRekognition\AWSLambdaRekognition.csproj", "{F6D20049-3102-4BDB-8C1E-FC23E1EBE814}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RekognitionService", "RekognitionService\RekognitionService.csproj", "{07274D9A-7A47-451A-B0F1-CB249A034A67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +41,10 @@ Global
 		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F6D20049-3102-4BDB-8C1E-FC23E1EBE814}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F6D20049-3102-4BDB-8C1E-FC23E1EBE814}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F6D20049-3102-4BDB-8C1E-FC23E1EBE814}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F6D20049-3102-4BDB-8C1E-FC23E1EBE814}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07274D9A-7A47-451A-B0F1-CB249A034A67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07274D9A-7A47-451A-B0F1-CB249A034A67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07274D9A-7A47-451A-B0F1-CB249A034A67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07274D9A-7A47-451A-B0F1-CB249A034A67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
