@@ -79,18 +79,21 @@ namespace APIMoodReboot.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult> CreateCourse(CreateCourseApiModel newCourse)
+        public async Task<int> CreateCourse(CreateCourseApiModel newCourse)
         {
-            int firstEditorId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Claim claim = HttpContext.User.Claims.SingleOrDefault(x => x.Type == "UserData");
+            string jsonUser = claim.Value;
+            AppUser user = JsonConvert.DeserializeObject<AppUser>(jsonUser);
+            int firstEditorId = user.Id;
 
-            int? courseId = await this.helperCourse.CreateCourse(newCourse.CenterId, firstEditorId, newCourse.Name, newCourse.IsVisible, newCourse.Image, newCourse.Description, newCourse.Password);
+            int courseId = await this.helperCourse.CreateCourse(newCourse.CenterId, firstEditorId, newCourse.Name, newCourse.IsVisible, newCourse.Image, newCourse.Description, newCourse.Password);
 
-            if (courseId != null)
+            if (courseId == null)
             {
-                return BadRequest("Error al crear el curso");
+                return -1;
             }
 
-            return CreatedAtAction(null, null);
+            return courseId;
         }
 
         [Authorize]

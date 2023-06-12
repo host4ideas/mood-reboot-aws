@@ -28,6 +28,9 @@ builder.Services.AddSignalR();
 builder.Services.AddAWSService<IAmazonS3>();
 builder.Services.AddTransient<ServiceStorageS3>();
 
+//AWS IVS
+builder.Services.AddTransient<ServiceIVS>();
+
 // Api Services
 builder.Services.AddTransient<ServiceApiCenters>();
 builder.Services.AddTransient<ServiceApiContents>();
