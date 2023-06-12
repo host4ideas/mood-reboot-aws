@@ -29,7 +29,7 @@ namespace MoodReboot.Services {
         public async Task SendMailAsync(string to, string message, string subject, string baseUrl, List<MailLink> links) {
 
             string request = "/api/email";
-            var response = await this.helperApi.PostAsync(request, new SendEmailModel() {
+            var response = await this.PostAsync(request, new SendEmailModel() {
                 To = to,
                 Message = message,
                 Subject = subject,
@@ -41,7 +41,7 @@ namespace MoodReboot.Services {
         public async Task SendMailAsync(string to, string message, string subject, string baseUrl) {
 
             string request = "/api/email";
-            var response = await this.helperApi.PostAsync(request, new SendEmailModel() {
+            var response = await this.PostAsync(request, new SendEmailModel() {
                 To = to,
                 Message = message,
                 Subject = subject,
