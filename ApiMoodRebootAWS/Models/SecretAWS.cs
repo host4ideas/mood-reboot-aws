@@ -1,4 +1,4 @@
-﻿namespace MoodReboot.Models
+﻿namespace APIMoodRebootAWS.Models
 {
     public class SecretAWS
     {
@@ -9,7 +9,6 @@
         public string BucketProfiles { get; set; }
         public string BucketProfilesUrl { get; set; }
         public string RDSConnectionString { get; set; }
-        public string EmailServiceUrl { get; set; }
-        public string TextModerationUrl { get; set; }
+
     }
 }

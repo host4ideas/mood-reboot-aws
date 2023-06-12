@@ -1,12 +1,12 @@
 {
   "profiles": {
-    "EmailMoodReboot": {
+    "APIMoodRebootAWSAWS": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:54329;http://localhost:54330"
+      "applicationUrl": "https://localhost:61712;http://localhost:61713"
     },
     "Mock Lambda Test Tool": {
       "commandName": "Executable",

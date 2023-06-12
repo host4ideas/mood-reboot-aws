@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using NugetMoodReboot.Models;
-using APIMoodReboot.Helpers;
+using APIMoodRebootAWS.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
 using NugetMoodReboot.Interfaces;
 
-namespace APIMoodReboot.Controllers
+namespace APIMoodRebootAWS.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

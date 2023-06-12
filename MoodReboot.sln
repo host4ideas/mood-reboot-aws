@@ -9,11 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NugetMoodReboot", "NugetMoo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIMoodReboot", "APIMoodReboot\APIMoodReboot.csproj", "{E0006009-97F0-4CBA-A552-7CF80DA321F9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextModerationService", "TextModerationService\TextModerationService.csproj", "{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RekognitionService", "RekognitionService\RekognitionService.csproj", "{07274D9A-7A47-451A-B0F1-CB249A034A67}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailMoodReboot", "EmailMoodReboot\EmailMoodReboot.csproj", "{EA14F558-9F6E-4371-AB9D-5803D818B3D5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextModeration", "TextModeration\TextModeration.csproj", "{F0367345-A831-4C00-8172-93A1FF0D10F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +33,6 @@ Global
 		{E0006009-97F0-4CBA-A552-7CF80DA321F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0006009-97F0-4CBA-A552-7CF80DA321F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0006009-97F0-4CBA-A552-7CF80DA321F9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AFF5E2FD-7FD3-4006-A852-697DD233AAD1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{07274D9A-7A47-451A-B0F1-CB249A034A67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{07274D9A-7A47-451A-B0F1-CB249A034A67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07274D9A-7A47-451A-B0F1-CB249A034A67}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{EA14F558-9F6E-4371-AB9D-5803D818B3D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA14F558-9F6E-4371-AB9D-5803D818B3D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA14F558-9F6E-4371-AB9D-5803D818B3D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0367345-A831-4C00-8172-93A1FF0D10F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0367345-A831-4C00-8172-93A1FF0D10F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0367345-A831-4C00-8172-93A1FF0D10F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0367345-A831-4C00-8172-93A1FF0D10F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
