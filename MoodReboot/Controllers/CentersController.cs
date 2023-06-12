@@ -16,13 +16,15 @@ namespace MoodReboot.Controllers
         private readonly ServiceApiCourses serviceCourses;
         private readonly HelperFileAWS helperFile;
         private readonly ServiceIVS serviceIVS;
+        private readonly ServiceMail serviceMail;
 
-        public CentersController(ServiceApiCourses serviceCourses, ServiceApiCenters serviceCenters, HelperFileAWS helperFile, ServiceIVS serviceIVS)
+        public CentersController(ServiceApiCourses serviceCourses, ServiceApiCenters serviceCenters, HelperFileAWS helperFile, ServiceIVS serviceIVS, ServiceMail serviceMail)
         {
             this.serviceCenters = serviceCenters;
             this.serviceCourses = serviceCourses;
             this.helperFile = helperFile;
             this.serviceIVS = serviceIVS;
+            this.serviceMail = serviceMail;
         }
 
         public async Task<IActionResult> Index()
@@ -233,7 +235,7 @@ namespace MoodReboot.Controllers
             string protocol = HttpContext.Request.IsHttps ? "https" : "http";
             string domainName = HttpContext.Request.Host.Value.ToString();
             string baseUrl = protocol + domainName;
-            //await this.serviceLogicApps.SendMailAsync(email, "Aprobación de centro en curso", "Estamos en proceso de aprobar su solicitud de creación de centro. Por favor, si ha cometido algún error en los datos o quisiera cancelar la operación. Mande un correo a: moodreboot@gmail.com", baseUrl);
+            await this.serviceMail.SendMailAsync(email, "Aprobación de centro en curso", "Estamos en proceso de aprobar su solicitud de creación de centro. Por favor, si ha cometido algún error en los datos o quisiera cancelar la operación. Mande un correo a: moodreboot@gmail.com", baseUrl);
             ViewData["MESSAGE"] = "Solicitud enviada";
             return View();
         }

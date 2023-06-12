@@ -6,7 +6,7 @@ using NugetMoodReboot.Models;
 namespace EmailMoodReboot.Controllers;
 
 [Route("api/[controller]")]
-public class ValuesController : ControllerBase
+public class EmailController : ControllerBase
 {
     static readonly string mailUser = "moodreboot@gmail.com";
     static readonly string mailPassword = "miqgrxbpypgbjbxg";

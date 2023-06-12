@@ -9,6 +9,6 @@
         public string BucketProfiles { get; set; }
         public string BucketProfilesUrl { get; set; }
         public string RDSConnectionString { get; set; }
-
+        public string EmailServiceUrl { get; set; }
     }
 }
