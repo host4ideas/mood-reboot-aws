@@ -10,7 +10,7 @@ public class EmailController : ControllerBase
 {
     static readonly string mailUser = "moodreboot@gmail.com";
     static readonly string mailPassword = "miqgrxbpypgbjbxg";
-    static readonly int port = 25;
+    static readonly int port = 587;
     static readonly string host = "smtp.gmail.com";
     static readonly bool enableSSL = true;
     static readonly bool defaultCredentials = false;

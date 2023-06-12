@@ -17,13 +17,14 @@ namespace MoodReboot.Services {
 
         public async Task<HttpResponseMessage> PostAsync(string request, object? body) {
             using HttpClient httpClient = HttpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(this.UrlEmailService);
+            //httpClient.BaseAddress = new Uri(this.UrlEmailService);
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             if (body == null) {
-                return await httpClient.PostAsync(request, null);
+                return await httpClient.PostAsync(this.UrlEmailService + request, null);
             }
-            return await httpClient.PostAsJsonAsync(request, body);
+            var response = await httpClient.PostAsJsonAsync(this.UrlEmailService + request, body);
+            return response;
         }
 
         public async Task SendMailAsync(string to, string message, string subject, string baseUrl, List<MailLink> links) {

@@ -1,4 +1,4 @@
-﻿using APIMoodReboot.Utils;
+﻿using NugetMoodReboot.Utils;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.SignalR;
 using MoodReboot.Hubs;
