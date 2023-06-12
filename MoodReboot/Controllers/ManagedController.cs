@@ -105,7 +105,7 @@ namespace MoodReboot.Controllers
                     Link = url
                 }
             };
-                await this.serviceMail.SendMailAsync(user.Email, "Confirmación de cuenta", "Se ha solicitado una petición para crear una cuenta en MoodReboot con este correo electrónico. Pulsa el siguiente enlace para confirmarla. Si no has sido tu el solicitante no te procupes, la petición será cancelada en un período de 24hrs.", links, baseUrl);
+                await this.serviceMail.SendMailAsync(user.Email, "Confirmación de cuenta", "Se ha solicitado una petición para crear una cuenta en MoodReboot con este correo electrónico. Pulsa el siguiente enlace para confirmarla. Si no has sido tu el solicitante no te procupes, la petición será cancelada en un período de 24hrs.", baseUrl, links);
 
                 ViewData["SUCCESS"] = "Correo de confirmación enviado";
                 return View("Login");
@@ -168,7 +168,7 @@ namespace MoodReboot.Controllers
                     Link = url
                 }
             };
-            await this.serviceMail.SendMailAsync(email, "Confirmación de cuenta", "Se ha solicitado una petición para crear una cuenta en MoodReboot con este correo electrónico. Pulsa el siguiente enlace para confirmarla. Si no has sido tu el solicitante no te procupes, la petición será cancelada en un período de 24hrs.", links, baseUrl);
+            await this.serviceMail.SendMailAsync(email, "Confirmación de cuenta", "Se ha solicitado una petición para crear una cuenta en MoodReboot con este correo electrónico. Pulsa el siguiente enlace para confirmarla. Si no has sido tu el solicitante no te procupes, la petición será cancelada en un período de 24hrs.", baseUrl, links);
 
             ViewData["SUCCESS"] = "Revisa tu correo electrónico";
             return View();
