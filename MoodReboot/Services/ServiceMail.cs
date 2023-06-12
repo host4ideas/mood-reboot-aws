@@ -28,7 +28,7 @@ namespace MoodReboot.Services {
 
         public async Task SendMailAsync(string to, string message, string subject, string baseUrl, List<MailLink> links) {
 
-            string request = "/api/email";
+            string request = "api/email";
             var response = await this.PostAsync(request, new SendEmailModel() {
                 To = to,
                 Message = message,

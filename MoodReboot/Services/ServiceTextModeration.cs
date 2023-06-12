@@ -19,7 +19,7 @@ namespace MoodReboot.Services
             using HttpClient httpClient = HttpClientFactory.CreateClient();
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            string request = this.UrlImageModerationService + "/api/ImageModeration";
+            string request = this.UrlImageModerationService + "api/ImageModeration";
             var response = await httpClient.PostAsJsonAsync(request, text);
             return await response.Content.ReadAsAsync<string>();
         }

@@ -48,7 +48,7 @@ namespace MoodReboot.Controllers
             {
                 string mimeType = hiddenFileInput.ContentType;
 
-                string fileName = "content_file_" + await this.serviceUsers.GetMaxFileAsync() + Path.GetExtension(hiddenFileInput.FileName);
+                string fileName = "content_file_" + await this.serviceUsers.GetMaxFileAsync();
                 // Upload file
                 // Try with a document
                 bool isUploaded = await this.helperFile.UploadFileAsync(hiddenFileInput, Containers.PrivateContent, FileTypes.Document, fileName);
