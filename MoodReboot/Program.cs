@@ -37,6 +37,7 @@ builder.Services.AddTransient<ServiceApiContents>();
 builder.Services.AddTransient<ServiceApiContentGroups>();
 builder.Services.AddTransient<ServiceApiCourses>();
 builder.Services.AddTransient<ServiceApiUsers>();
+builder.Services.AddTransient<ServiceMail>();
 
 // Helpers
 builder.Services.AddSingleton<HelperApi>();
