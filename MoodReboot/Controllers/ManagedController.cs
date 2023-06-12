@@ -137,7 +137,7 @@ namespace MoodReboot.Controllers
             {
                 int maximo = await this.serviceUsers.GetMaxUserAsync();
 
-                fileName = "image_" + maximo;
+                fileName = "image_" + maximo + Path.GetExtension(image.FileName);
 
                 bool isUploaded = await this.helperFile.UploadFileAsync(image, Containers.ProfileImages, FileTypes.Image, fileName);
 

@@ -1,24 +1,18 @@
-using Amazon.Lambda.Core;
+using Microsoft.AspNetCore.Mvc;
 using Amazon.Comprehend;
 using Amazon.Comprehend.Model;
 using Amazon.Translate;
 using Amazon.Translate.Model;
 using Amazon;
 
-// Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
-[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
+namespace TextModeration.Controllers;
 
-namespace TextModerationService;
-
-public class Function
+[Route("api/[controller]")]
+public class TextModerationController : ControllerBase
 {
-    /// <summary>
-    /// A simple function that takes a string and does a ToUpper
-    /// </summary>
-    /// <param name="input"></param>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    public async Task<string> FunctionHandler(string input, ILambdaContext context)
+    // POST api/values
+    [HttpPost]
+    public async Task<string> Post([FromBody] string input)
     {
         return await TranslatingTextAsync(input);
     }
@@ -116,4 +110,5 @@ public class Function
 
         return detectedLanguage;
     }
+
 }

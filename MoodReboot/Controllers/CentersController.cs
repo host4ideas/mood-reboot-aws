@@ -109,7 +109,7 @@ namespace MoodReboot.Controllers
         [HttpPost]
         public async Task<IActionResult> EditorView(int centerId, string name, bool isVisible, string description, IFormFile image, string password)
         {
-            string fileName = "course_image_" + await this.serviceCourses.GetMaxCourseAsync();
+            string fileName = "course_image_" + await this.serviceCourses.GetMaxCourseAsync() + Path.GetExtension(image.FileName);
 
             bool uploaded = await this.helperFile.UploadFileAsync(image, Containers.PrivateContent, FileTypes.Image, fileName);
 
@@ -190,7 +190,7 @@ namespace MoodReboot.Controllers
         [HttpPost]
         public async Task<IActionResult> DirectorView(int centerId, string centerEmail, string centerName, string centerAddress, string centerTelephone, IFormFile centerImage)
         {
-            string fileName = "center_image_" + centerId;
+            string fileName = "center_image_" + centerId + Path.GetExtension(centerImage.FileName);
 
             bool isUploaded = await this.helperFile.UploadFileAsync(centerImage, Containers.PrivateContent, FileTypes.Image, fileName);
 
@@ -221,7 +221,7 @@ namespace MoodReboot.Controllers
 
             int maximo = await this.serviceCenters.GetMaxCenterAsync();
 
-            string fileName = "center_image_" + maximo;
+            string fileName = "center_image_" + maximo + Path.GetExtension(centerImage.FileName);
 
             bool isUploaded = await this.helperFile.UploadFileAsync(centerImage, Containers.PrivateContent, FileTypes.Image, fileName);
 
