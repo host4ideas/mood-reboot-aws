@@ -58,12 +58,12 @@ If already installed check if new version is available.
 
 Execute unit tests
 ```
-    cd "APIMoodRebootAWSAWS/test/APIMoodRebootAWSAWS.Tests"
+    cd "ImageModeration/test/ImageModeration.Tests"
     dotnet test
 ```
 
 Deploy application
 ```
-    cd "APIMoodRebootAWSAWS/src/APIMoodRebootAWSAWS"
+    cd "ImageModeration/src/ImageModeration"
     dotnet lambda deploy-serverless
 ```

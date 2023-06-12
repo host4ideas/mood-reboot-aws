@@ -44,6 +44,7 @@ builder.Services.AddTransient<ServiceApiCourses>();
 builder.Services.AddTransient<ServiceApiUsers>();
 builder.Services.AddTransient<ServiceMail>();
 builder.Services.AddTransient<ServiceTextModeration>();
+builder.Services.AddTransient<ServiceImageModeration>();
 
 // Helpers
 builder.Services.AddSingleton<HelperApi>();
