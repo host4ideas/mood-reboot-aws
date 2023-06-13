@@ -16,13 +16,15 @@ namespace MoodReboot.Controllers
         private readonly ServiceApiCourses serviceCourses;
         private readonly HelperFileAWS helperFile;
         private readonly ServiceIVS serviceIVS;
+        private readonly ServiceMail serviceMail;
 
-        public CentersController(ServiceApiCourses serviceCourses, ServiceApiCenters serviceCenters, HelperFileAWS helperFile, ServiceIVS serviceIVS)
+        public CentersController(ServiceApiCourses serviceCourses, ServiceApiCenters serviceCenters, HelperFileAWS helperFile, ServiceIVS serviceIVS, ServiceMail serviceMail)
         {
             this.serviceCenters = serviceCenters;
             this.serviceCourses = serviceCourses;
             this.helperFile = helperFile;
             this.serviceIVS = serviceIVS;
+            this.serviceMail = serviceMail;
         }
 
         public async Task<IActionResult> Index()
@@ -107,7 +109,7 @@ namespace MoodReboot.Controllers
         [HttpPost]
         public async Task<IActionResult> EditorView(int centerId, string name, bool isVisible, string description, IFormFile image, string password)
         {
-            string fileName = "course_image_" + await this.serviceCourses.GetMaxCourseAsync();
+            string fileName = "course_image_" + await this.serviceCourses.GetMaxCourseAsync() + Path.GetExtension(image.FileName);
 
             bool uploaded = await this.helperFile.UploadFileAsync(image, Containers.PrivateContent, FileTypes.Image, fileName);
 
@@ -188,7 +190,7 @@ namespace MoodReboot.Controllers
         [HttpPost]
         public async Task<IActionResult> DirectorView(int centerId, string centerEmail, string centerName, string centerAddress, string centerTelephone, IFormFile centerImage)
         {
-            string fileName = "center_image_" + centerId;
+            string fileName = "center_image_" + centerId + Path.GetExtension(centerImage.FileName);
 
             bool isUploaded = await this.helperFile.UploadFileAsync(centerImage, Containers.PrivateContent, FileTypes.Image, fileName);
 
@@ -219,7 +221,7 @@ namespace MoodReboot.Controllers
 
             int maximo = await this.serviceCenters.GetMaxCenterAsync();
 
-            string fileName = "center_image_" + maximo;
+            string fileName = "center_image_" + maximo + Path.GetExtension(centerImage.FileName);
 
             bool isUploaded = await this.helperFile.UploadFileAsync(centerImage, Containers.PrivateContent, FileTypes.Image, fileName);
 
@@ -233,7 +235,7 @@ namespace MoodReboot.Controllers
             string protocol = HttpContext.Request.IsHttps ? "https" : "http";
             string domainName = HttpContext.Request.Host.Value.ToString();
             string baseUrl = protocol + domainName;
-            //await this.serviceLogicApps.SendMailAsync(email, "Aprobación de centro en curso", "Estamos en proceso de aprobar su solicitud de creación de centro. Por favor, si ha cometido algún error en los datos o quisiera cancelar la operación. Mande un correo a: moodreboot@gmail.com", baseUrl);
+            await this.serviceMail.SendMailAsync(email, "Aprobación de centro en curso", "Estamos en proceso de aprobar su solicitud de creación de centro. Por favor, si ha cometido algún error en los datos o quisiera cancelar la operación. Mande un correo a: moodreboot@gmail.com", baseUrl);
             ViewData["MESSAGE"] = "Solicitud enviada";
             return View();
         }
