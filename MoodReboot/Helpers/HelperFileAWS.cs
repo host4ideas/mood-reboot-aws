@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure.CognitiveServices.ContentModerator;
-using MoodReboot.Services;
+﻿using MoodReboot.Services;
 using MvcCoreAWSS3.Services;
 using NugetMoodReboot.Helpers;
 
@@ -8,12 +7,10 @@ namespace MoodReboot.Helpers
     public class HelperFileAWS
     {
         private readonly ServiceStorageS3 serviceStorage;
-        private readonly ServiceImageModeration imageModeration;
 
-        public HelperFileAWS(ServiceStorageS3 serviceStorage, ServiceImageModeration imageModeration)
+        public HelperFileAWS(ServiceStorageS3 serviceStorage)
         {
             this.serviceStorage = serviceStorage;
-            this.imageModeration = imageModeration;
         }
 
         public Task DeleteFile(int fileId)
@@ -123,15 +120,19 @@ namespace MoodReboot.Helpers
 
                 await this.serviceStorage.UploadFileAsync(fileName, stream, container);
 
-                if (fileType == FileTypes.Image)
-                {
-                    bool isExplicit = await this.imageModeration.ModerateImageAsync(container, fileName);
-                    if (isExplicit)
-                    {
-                        await this.DeleteFileAsync(container, fileName);
-                        return false;
-                    }
-                }
+                //if (fileType == FileTypes.Image)
+                //{
+                //    string urlFile = this.GetBlobUri(container, fileName);
+
+                //    var result = await this.contentModerator.ModerateImageAsync(urlFile);
+
+                //    if (result.ImageModeration.IsImageAdultClassified == true ||
+                //    result.ImageModeration.IsImageRacyClassified == true)
+                //    {
+                //        await this.DeleteFileAsync(container, fileName);
+                //        return false;
+                //    }
+                //}
 
                 return true;
             }
@@ -204,15 +205,19 @@ namespace MoodReboot.Helpers
                 using Stream stream = file.OpenReadStream();
                 await this.serviceStorage.UploadFileAsync(fileName, stream, container);
 
-                if (fileType == FileTypes.Image)
-                {
-                    bool isExplicit = await this.imageModeration.ModerateImageAsync(container, fileName);
-                    if (isExplicit)
-                    {
-                        await this.DeleteFileAsync(container, fileName);
-                        return false;
-                    }
-                }
+                //if (fileType == FileTypes.Image)
+                //{
+                //    string urlFile = this.GetBlobUri(container, fileName);
+
+                //    var result = await this.contentModerator.ModerateImageAsync(urlFile);
+
+                //    if (result.ImageModeration.IsImageAdultClassified == true ||
+                //    result.ImageModeration.IsImageRacyClassified == true)
+                //    {
+                //        await this.DeleteFileAsync(container, fileName);
+                //        return false;
+                //    }
+                //}
 
                 return true;
             }
@@ -220,36 +225,10 @@ namespace MoodReboot.Helpers
             return false;
         }
 
-        /// <summary>
-        /// Only for public objects
-        /// </summary>
-        /// <param name="container"></param>
-        /// <param name="blobName"></param>
-        /// <returns></returns>
-        public string GetBlobPublicUri(Containers container, string blobName)
+        public string GetBlobUri(Containers container, string blobName)
         {
             string containerAzure = HelperPathAWS.MapBucketName(container);
-            return $"https://{containerAzure}.s3.amazonaws.com/" + blobName;
-        }
-
-        /// <summary>
-        /// Retrieves the Base64 encoded content of an object
-        /// </summary>
-        /// <param name="containers"></param>
-        /// <param name="blobName"></param>
-        /// <returns></returns>
-        public async Task<string> GetBlobBase64(Containers containers, string blobName)
-        {
-            string fileContent;
-            using (Stream imageStream = await this.serviceStorage.GetFileAsync(blobName, containers))
-            {
-                using MemoryStream memoryStream = new();
-                await imageStream.CopyToAsync(memoryStream);
-                byte[] bytes = memoryStream.ToArray();
-                string base64Image = Convert.ToBase64String(bytes);
-                fileContent = "data:;base64," + base64Image;
-            }
-            return fileContent;
+            return $"https://{containerAzure}.s3.us-east-1.amazonaws.com/" + blobName;
         }
 
         public async Task DeleteFileAsync(Containers container, string blobName)

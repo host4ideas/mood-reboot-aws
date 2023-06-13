@@ -1,15 +1,17 @@
 ﻿using Amazon.SecretsManager.Model;
 using Amazon.SecretsManager;
 using Amazon;
+using Amazon.SecretsManager;
+using Amazon.SecretsManager.Model;
 using MoodReboot.Models;
 using Newtonsoft.Json;
 
 namespace MoodReboot.Helpers
 {
-    public static class HelperSecret
+    public class HelperSecret
     {
 
-         public static async Task<SecretAWS> GetSecret()
+        public async Task<SecretAWS> GetSecret()
         {
             string secretName = "MoodReboot_Credentials";
             string region = "us-east-1";
@@ -38,7 +40,7 @@ namespace MoodReboot.Helpers
 
             string secret = response.SecretString;
 
-            return JsonConvert.DeserializeObject<SecretAWS>(secret);
+            return (SecretAWS)JsonConvert.DeserializeObject(secret);
 
             // Your code goes here
         }

@@ -11,7 +11,7 @@ namespace MoodReboot.Models
         [Display(Name = "Email")]
         [Required(ErrorMessage = "Email requerido")]
         [EmailAddress(ErrorMessage = "Email inválido")]
-        //[Remote(action: "VerifyEmail", controller: "Managed")]
+        [Remote(action: "VerifyEmail", controller: "Managed")]
         public string Email { get; set; }
         // Validations
         [Display(Name = "Confirmar email")]
@@ -32,7 +32,7 @@ namespace MoodReboot.Models
         [Display(Name = "Nombre de usuario")]
         [Required(ErrorMessage = "Nombre de usuario requerido")]
         [StringLength(20, ErrorMessage = "{0} debe de estar entre {2} y {1}.", MinimumLength = 4)]
-        //[Remote(action: "VerifyUsername", controller: "Managed")]
+        [Remote(action: "VerifyUsername", controller: "Managed")]
         public string UserName { get; set; }
         // Validations
         [Display(Name = "Nombre")]

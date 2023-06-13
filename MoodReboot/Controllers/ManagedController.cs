@@ -13,13 +13,11 @@ namespace MoodReboot.Controllers
     {
         private readonly HelperFileAWS helperFile;
         private readonly ServiceApiUsers serviceUsers;
-        private readonly ServiceMail serviceMail;
 
-        public ManagedController(HelperFileAWS helperFile, ServiceApiUsers serviceUsers, ServiceMail serviceMail)
+        public ManagedController(HelperFileAWS helperFile, ServiceApiUsers serviceUsers)
         {
             this.serviceUsers = serviceUsers;
             this.helperFile = helperFile;
-            this.serviceMail = serviceMail;
         }
 
         public IActionResult AccessError()
@@ -69,7 +67,7 @@ namespace MoodReboot.Controllers
             Claim claimRole = new(ClaimTypes.Role, user.Role);
             identity.AddClaim(claimRole);
 
-            string imageUrl = await this.helperFile.GetBlobBase64(Containers.ProfileImages, user.Image);
+            string imageUrl = this.helperFile.GetBlobUri(Containers.ProfileImages, user.Image);
             Claim claimImage = new("IMAGE", imageUrl);
             identity.AddClaim(claimImage);
 
@@ -79,7 +77,10 @@ namespace MoodReboot.Controllers
             ClaimsPrincipal userPrincipal = new(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal);
 
-            return RedirectToAction("Index", "Home");
+            string controller = TempData["controller"].ToString();
+            string action = TempData["action"].ToString();
+
+            return RedirectToAction(action, controller);
         }
 
         public async Task<IActionResult> ResendConfirmationEmail(int userId, string token)
@@ -102,7 +103,7 @@ namespace MoodReboot.Controllers
                     Link = url
                 }
             };
-                await this.serviceMail.SendMailAsync(user.Email, "Confirmación de cuenta", "Se ha solicitado una petición para crear una cuenta en MoodReboot con este correo electrónico. Pulsa el siguiente enlace para confirmarla. Si no has sido tu el solicitante no te procupes, la petición será cancelada en un período de 24hrs.", baseUrl, links);
+                //await this.serviceLogicApps.SendMailAsync(user.Email, "Confirmación de cuenta", "Se ha solicitado una petición para crear una cuenta en MoodReboot con este correo electrónico. Pulsa el siguiente enlace para confirmarla. Si no has sido tu el solicitante no te procupes, la petición será cancelada en un período de 24hrs.", links, baseUrl);
 
                 ViewData["SUCCESS"] = "Correo de confirmación enviado";
                 return View("Login");
@@ -134,7 +135,7 @@ namespace MoodReboot.Controllers
             {
                 int maximo = await this.serviceUsers.GetMaxUserAsync();
 
-                fileName = "image_" + maximo + Path.GetExtension(image.FileName);
+                fileName = "image_" + maximo;
 
                 bool isUploaded = await this.helperFile.UploadFileAsync(image, Containers.ProfileImages, FileTypes.Image, fileName);
 
@@ -165,7 +166,7 @@ namespace MoodReboot.Controllers
                     Link = url
                 }
             };
-            await this.serviceMail.SendMailAsync(email, "Confirmación de cuenta", "Se ha solicitado una petición para crear una cuenta en MoodReboot con este correo electrónico. Pulsa el siguiente enlace para confirmarla. Si no has sido tu el solicitante no te procupes, la petición será cancelada en un período de 24hrs.", baseUrl, links);
+            //await this.serviceLogicApps.SendMailAsync(email, "Confirmación de cuenta", "Se ha solicitado una petición para crear una cuenta en MoodReboot con este correo electrónico. Pulsa el siguiente enlace para confirmarla. Si no has sido tu el solicitante no te procupes, la petición será cancelada en un período de 24hrs.", links, baseUrl);
 
             ViewData["SUCCESS"] = "Revisa tu correo electrónico";
             return View();
