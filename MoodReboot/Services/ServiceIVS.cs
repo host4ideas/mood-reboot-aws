@@ -10,7 +10,7 @@ namespace MoodReboot.Services
 
         public ServiceIVS()
         {
-            _ivsClient = new AmazonIVSClient("AKIAX3TY4MFIFOFHGR5T", "vU1Sj+1duAS5dH7kDD7eh3gvXccdQEXVstmyrgmh", RegionEndpoint.USEast1);
+            _ivsClient = new AmazonIVSClient("AKIAX3TY4MFICA3MZTLF", "OXvjAgU2EpWSO1MSUxTk0JMjB9rCAMC6fVOU2ee1", RegionEndpoint.USEast1);
         }
 
 
