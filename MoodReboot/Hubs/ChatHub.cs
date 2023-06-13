@@ -8,12 +8,10 @@ namespace MoodReboot.Hubs
     public class ChatHub : Hub
     {
         private readonly ServiceApiUsers serviceUsers;
-        private readonly ServiceTextModeration serviceTextModeration;
 
-        public ChatHub(ServiceApiUsers serviceUsers, ServiceTextModeration serviceTextModeration)
+        public ChatHub(ServiceApiUsers serviceUsers)
         {
             this.serviceUsers = serviceUsers;
-            this.serviceTextModeration = serviceTextModeration;
         }
 
         public async Task SendMessage(int userId, int groupChatId, string userName, string text, string fileId)
@@ -23,7 +21,14 @@ namespace MoodReboot.Hubs
 
         public async Task SendMessageToGroup(string userId, string groupChatId, string userName, string text)
         {
-            text = await this.serviceTextModeration.ModerateText(text);
+            //var result = this.contentModerator.ModerateText(text);
+            //text = result.AutoCorrectedText;
+            //var reviewNeeded = result.Classification.ReviewRecommended;
+
+            //if (reviewNeeded == true)
+            //{
+            //    text = "Moderated message";
+            //}
 
             // Send message to group
             await Clients.Group(groupChatId.ToString()).SendAsync(

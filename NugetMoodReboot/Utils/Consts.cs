@@ -1,4 +1,4 @@
-﻿namespace NugetMoodReboot.Utils
+﻿namespace APIMoodReboot.Utils
 {
     public static class Consts
     {

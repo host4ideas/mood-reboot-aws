@@ -1,18 +1,16 @@
-using Amazon;
 using Amazon.S3;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MoodReboot.Helpers;
 using MoodReboot.Hubs;
-using MoodReboot.Models;
 using MoodReboot.Services;
 using MvcCoreAWSS3.Services;
 using NugetMoodReboot.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-SecretAWS secretos = await HelperSecret.GetSecret();
-builder.Services.AddSingleton(secretos);
+//string signalrCnn = builder.Configuration.GetConnectionString("SignalR");
+//string azureStorageKeys = builder.Configuration.GetValue<string>("AzureKeys:StorageAccount");
 
 // IHttpClientFactory
 builder.Services.AddHttpClient();
@@ -27,10 +25,7 @@ builder.Services.AddSingleton<HtmlSanitizer>();
 builder.Services.AddSignalR();
 
 // AWS S3
-builder.Services.AddAWSService<IAmazonS3>(options: new Amazon.Extensions.NETCore.Setup.AWSOptions()
-{
-    Region = RegionEndpoint.USEast1
-});
+builder.Services.AddAWSService<IAmazonS3>();
 builder.Services.AddTransient<ServiceStorageS3>();
 
 //AWS IVS
@@ -42,9 +37,6 @@ builder.Services.AddTransient<ServiceApiContents>();
 builder.Services.AddTransient<ServiceApiContentGroups>();
 builder.Services.AddTransient<ServiceApiCourses>();
 builder.Services.AddTransient<ServiceApiUsers>();
-builder.Services.AddTransient<ServiceMail>();
-builder.Services.AddTransient<ServiceTextModeration>();
-builder.Services.AddTransient<ServiceImageModeration>();
 
 // Helpers
 builder.Services.AddSingleton<HelperApi>();
