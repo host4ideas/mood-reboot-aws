@@ -79,10 +79,7 @@ namespace MoodReboot.Controllers
             ClaimsPrincipal userPrincipal = new(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal);
 
-            string controller = TempData["controller"].ToString();
-            string action = TempData["action"].ToString();
-
-            return RedirectToAction(action, controller);
+            return RedirectToAction("Index", "Home");
         }
 
         public async Task<IActionResult> ResendConfirmationEmail(int userId, string token)
