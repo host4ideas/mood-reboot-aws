@@ -6,7 +6,6 @@ using Ganss.Xss;
 using Microsoft.EntityFrameworkCore;
 using NugetMoodReboot.Helpers;
 using NugetMoodReboot.Interfaces;
-using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +41,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigin", X => X.AllowAnyHeader().AllowCredentials().AllowAnyMethod().WithOrigins("http://ec2-52-45-33-3.compute-1.amazonaws.com", "https://localhost:7196"));
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,6 +54,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowOrigin");
 
 app.UseHttpsRedirection();
 

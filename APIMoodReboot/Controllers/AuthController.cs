@@ -5,7 +5,6 @@ using APIMoodReboot.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Authorization;
 using NugetMoodReboot.Interfaces;
 
 namespace APIMoodReboot.Controllers

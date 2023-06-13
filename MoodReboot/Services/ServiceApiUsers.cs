@@ -1,9 +1,12 @@
-﻿using APIMoodReboot.Utils;
+﻿using NugetMoodReboot.Utils;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.SignalR;
 using MoodReboot.Hubs;
 using NugetMoodReboot.Helpers;
 using NugetMoodReboot.Models;
+using System.Net.Http.Json;
+using System.Net.Http.Headers;
+using System.Net.Http;
 
 namespace MoodReboot.Services
 {

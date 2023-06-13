@@ -11,7 +11,9 @@
     <div class="px-3 py-4 overflow-y-auto rounded">
         <ul class="space-y-2">
             @{
-                foreach (ChatGroup group in Model)
+                if(Model != null)
+                {
+                    foreach (ChatGroup group in Model)
                 {
                     string dropdownBtnId = "chat-options-toggle-" + group.Id;
                     string dropdownId = "chat-options-" + group.Id;
@@ -83,6 +85,7 @@
                             </ul>
                         </div>
                     </li>
+                }
                 }
             }
         </ul>

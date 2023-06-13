@@ -1,4 +1,4 @@
-﻿using APIMoodReboot.Utils;
+﻿using NugetMoodReboot.Utils;
 using NugetMoodReboot.Helpers;
 using NugetMoodReboot.Models;
 

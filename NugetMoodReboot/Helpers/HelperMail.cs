@@ -275,6 +275,10 @@ namespace NugetMoodReboot.Helpers
 
         public string BuildMailTemplate(string asunto, string mensaje, string baseUrl, List<MailLink>? links = null)
         {
+            if (baseUrl.Contains("localhost:7196")) {
+                baseUrl = "http://moodreboot-prod.us-east-1.elasticbeanstalk.com/";
+            }
+
             string nuevoEmail = this.MRBaseMail;
             nuevoEmail = nuevoEmail.Replace("%SUBJECT%", asunto);
             nuevoEmail = nuevoEmail.Replace("%BODY%", mensaje);
@@ -315,6 +319,10 @@ namespace NugetMoodReboot.Helpers
 
         public Task SendMailAsync(string para, string asunto, string mensaje, string baseUrl)
         {
+            if (baseUrl.Contains("localhost:7196")) {
+                baseUrl = "http://moodreboot-prod.us-east-1.elasticbeanstalk.com/";
+            }
+
             string nuevoEmail = this.BuildMailTemplate(asunto, mensaje, baseUrl);
             MailMessage mail = this.ConfigureMailMessage(para, asunto, nuevoEmail);
             SmtpClient client = this.CofigureSmtpClient();
@@ -323,6 +331,10 @@ namespace NugetMoodReboot.Helpers
 
         public Task SendMailAsync(string para, string asunto, string mensaje, List<MailLink> links, string baseUrl)
         {
+            if (baseUrl.Contains("localhost:7196")) {
+                baseUrl = "http://moodreboot-prod.us-east-1.elasticbeanstalk.com/";
+            }
+
             string nuevoEmail = this.BuildMailTemplate(asunto, mensaje, baseUrl, links);
             MailMessage mail = this.ConfigureMailMessage(para, asunto, nuevoEmail);
             SmtpClient client = this.CofigureSmtpClient();
@@ -331,6 +343,10 @@ namespace NugetMoodReboot.Helpers
 
         public Task SendMailAsync(string para, string asunto, string mensaje, string path, string baseUrl)
         {
+            if (baseUrl.Contains("localhost:7196")) {
+                baseUrl = "http://moodreboot-prod.us-east-1.elasticbeanstalk.com/";
+            }
+
             MailMessage mail = this.ConfigureMailMessage(para, asunto, mensaje, path);
             SmtpClient client = this.CofigureSmtpClient();
             return client.SendMailAsync(mail);
@@ -338,6 +354,9 @@ namespace NugetMoodReboot.Helpers
 
         public Task SendMailAsync(string para, string asunto, string mensaje, List<string> paths, string baseUrl)
         {
+            if (baseUrl.Contains("localhost:7196")) {
+                baseUrl = "http://moodreboot-prod.us-east-1.elasticbeanstalk.com/";
+            }
             MailMessage mail = this.ConfigureMailMessage(para, asunto, mensaje, paths);
             SmtpClient client = this.CofigureSmtpClient();
             return client.SendMailAsync(mail);
