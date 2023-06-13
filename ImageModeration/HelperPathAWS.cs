@@ -10,15 +10,15 @@
 
             if (container == Containers.ProfileImages)
             {
-                carpeta = "moodreboot-profile-images";
+                carpeta = "moodreboot-profile-images2";
             }
             else if (container == Containers.PublicContent)
             {
-                carpeta = "moodreboot-public-content";
+                carpeta = "moodreboot-public-content2";
             }
             else if (container == Containers.PrivateContent)
             {
-                carpeta = "moodreboot-private-content";
+                carpeta = "moodreboot-private-content2";
             }
 
             return carpeta;
