@@ -6,12 +6,12 @@
         "dotnet lambda help",
         "All the command line options for the Lambda command can be specified in this file."
     ],
-    "profile"     : "GioAWS",
+    "profile"     : "guti-admin",
     "region"      : "us-east-1",
     "configuration" : "Release",
     "s3-prefix"     : "EmailMoodReboot/",
     "template"      : "serverless.template",
     "template-parameters" : "",
-    "s3-bucket"           : "emailmoodrebootbucket",
-    "stack-name"          : "emailmoodreboot"
+    "s3-bucket"           : "emailmoodreboot2",
+    "stack-name"          : "emailmoodreboot2"
 }
