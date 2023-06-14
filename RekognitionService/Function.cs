@@ -46,7 +46,7 @@ namespace AWSLambdaRekognition {
 
                     try {
                         using (var rekognitionClient = new AmazonRekognitionClient()) {
-                            // Acceder al objeto S3 utilizando el cliente de S3 y la informaci髇 del evento
+                            // Acceder al objeto S3 utilizando el cliente de S3 y la informaci贸n del evento
                             using (var response = await S3Client.GetObjectAsync(s3Event.Bucket.Name, s3Event.Object.Key)) {
                                 using (var responseStream = response.ResponseStream) {
                                     // Leer el contenido de la imagen del flujo y convertirlo en bytes
@@ -56,24 +56,24 @@ namespace AWSLambdaRekognition {
                                         imageBytes = memoryStream.ToArray();
                                     }
 
-                                    // Crear una instancia de la solicitud de detecci髇 de etiquetas de moderaci髇
+                                    // Crear una instancia de la solicitud de detecci贸n de etiquetas de moderaci贸n
                                     var moderationRequest = new DetectModerationLabelsRequest {
                                         Image = new Amazon.Rekognition.Model.Image {
                                             Bytes = new MemoryStream(imageBytes)
                                         }
                                     };
 
-                                    // Enviar la solicitud de detecci髇 de etiquetas de moderaci髇 a Amazon Rekognition
+                                    // Enviar la solicitud de detecci贸n de etiquetas de moderaci贸n a Amazon Rekognition
                                     var moderationResponse = await rekognitionClient.DetectModerationLabelsAsync(moderationRequest);
 
-                                    // Analizar los resultados de la detecci髇 de contenido expl韈ito
+                                    // Analizar los resultados de la detecci贸n de contenido expl铆cito
                                     var moderationLabels = moderationResponse.ModerationLabels;
                                     bool isExplicit = moderationLabels.Count > 0;
 
                                     // context.Logger.LogInformation($"Image {s3Event.Object.Key} moderation result: {(isExplicit ? "Explicit" : "Non-explicit")}");
 
-                                    /* =================== ENV蚈 DE MENSAJE ===================
-                                    // Crear un mensaje con la informaci髇 de moderaci髇
+                                    /* =================== ENV脥O DE MENSAJE ===================
+                                    // Crear un mensaje con la informaci贸n de moderaci贸n
                                     var message = new {
                                         ImageKey = s3Event.Object.Key,
                                         IsExplicit = isExplicit
@@ -83,7 +83,7 @@ namespace AWSLambdaRekognition {
                                     // Enviar el mensaje al SQS
                                     var sqsClient = new AmazonSQSClient();
                                     var sqsRequest = new SendMessageRequest {
-                                        QueueUrl = "https://sqs.us-east-1.amazonaws.com/428358434009/queue-viernes-gach",
+                                        QueueUrl = "",
                                         MessageBody = messageJson
                                     };
                                     await sqsClient.SendMessageAsync(sqsRequest);
